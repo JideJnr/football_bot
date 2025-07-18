@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
 import { broadcastLog } from './wsServer';
-import { MatchScraper } from './runners/index';  // Assuming the scraper is in this file
+import { MatchScraper } from './runners/index';  
 
-// Singleton instance
+
 let scraper: MatchScraper | null = null;
 let botRunning = false;
 
@@ -19,7 +19,6 @@ export const startBot = async (req: Request, res: Response) => {
     
     broadcastLog(`🚀 Starting ${scrapeLive ? 'LIVE' : 'PREMATCH'} scraping...`);
     
-    // Initialize scraper (starts automatically)
     scraper = new MatchScraper();
     
     return res.status(200).json({

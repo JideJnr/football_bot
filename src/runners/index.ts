@@ -1,65 +1,89 @@
-import { fetchLiveMatches, fetchTodayMatches } from '../runners/sportybet';
+import { fetchTodayMatches, fetchLiveMatches } from './sportybet';
 import { broadcastLog } from '../wsServer';
 
-// Bot State Core
-let isRunning = false;
-let intervalId: NodeJS.Timeout | null = null;
-const SCRAPE_INTERVAL = 15000; // 15 seconds
+export class MatchScraper {
+    private dailyInterval?: NodeJS.Timeout;
+    private liveInterval?: NodeJS.Timeout;
 
-// Main Bot Engine
-const runScrapingCycle = async (isLive: boolean = true) => {
-  if (!isRunning) return;
-  
-  try {
-    broadcastLog(`🔄 Scraping ${isLive ? 'LIVE' : 'PREMATCH'} matches...`);
-    
-    const matches = isLive ? await fetchLiveMatches() : await fetchTodayMatches();
-    
-    // Process data (add your business logic here)
-    broadcastLog(`✅ Got ${matches.length} matches`);
-    console.log('Sample match:', matches[0]); // Debug
-    
-    // Forward to your DB/API if needed
-    // await sendToDatabase(matches);
-    
-  } catch (err) {
-    broadcastLog(`⚠️ Scrape failed: ${err instanceof Error ? err.message : 'Unknown error'}`);
-  }
-};
+    constructor() {
+        this.startAllScrapers();
+    }
 
-// Control Functions
-export const startBot = async (scrapeLive: boolean = true) => {
-  if (isRunning) {
-    broadcastLog('⚠️ Bot already running');
-    return false;
-  }
+    // Core Runner Logic
+    private startAllScrapers() {
+        broadcastLog('🚀 Starting all scrapers...');
+        
+        // 1. Daily Matches Pipeline
+        this.scheduleDailyTask(async () => {
+            try {
+                broadcastLog('⏳ Fetching today matches...');
+                const todayData = await fetchTodayMatches();
+                broadcastLog(`✅ Today matches: ${todayData.length} events`);
+            } catch (err) {
+                broadcastLog(`⚠️ Today matches error: ${err instanceof Error ? err.message : 'Unknown'}`);
+            }
+        });
 
-  isRunning = true;
-  broadcastLog('🚀 Starting GodScraper bot...');
-  
-  // Immediate first run
-  await runScrapingCycle(scrapeLive); 
-  
-  // Set up interval
-  intervalId = setInterval(() => runScrapingCycle(scrapeLive), SCRAPE_INTERVAL);
-  return true;
-};
+        // 2. Live Matches Pipeline
+        this.scheduleLiveTask(async () => {
+            try {
+                broadcastLog('🔴 Fetching live matches...');
+                const liveData = await fetchLiveMatches();
+                broadcastLog(`⚡ Live matches: ${liveData.length} events`);
+            } catch (err) {
+                broadcastLog(`⚠️ Live matches error: ${err instanceof Error ? err.message : 'Unknown'}`);
+            }
+        });
+    }
 
-export const stopBot = () => {
-  if (!isRunning || !intervalId) {
-    broadcastLog('⚠️ Bot not running');
-    return false;
-  }
+    // Scheduler Utilities
+    private scheduleDailyTask(task: () => Promise<void>) {
+        // Immediate first run
+        task();
+        
+        // Then schedule for midnight daily
+        const scheduleNext = () => {
+            const now = new Date();
+            const midnight = new Date();
+            midnight.setHours(24, 0, 0, 0);
+            const msUntilMidnight = midnight.getTime() - now.getTime();
 
-  clearInterval(intervalId);
-  intervalId = null;
-  isRunning = false;
-  broadcastLog('🛑 Bot stopped');
-  return true;
-};
+            this.dailyInterval = setTimeout(() => {
+                task();
+                scheduleNext(); // Reschedule for next midnight
+            }, msUntilMidnight);
+        };
 
-// Health Check
-export const botStatus = () => ({
-  isRunning,
-  lastActivity: new Date().toISOString()
+        scheduleNext();
+        broadcastLog('⏰ Today matches scraper scheduled (daily at midnight)');
+    }
+
+    private scheduleLiveTask(task: () => Promise<void>) {
+        // Immediate first run
+        task();
+        
+        // Then every 3 minutes
+        this.liveInterval = setInterval(task, 3 * 60 * 1000);
+        broadcastLog('🔄 Live matches scraper started (every 3 minutes)');
+    }
+
+    public cleanup() {
+        if (this.dailyInterval) {
+            clearTimeout(this.dailyInterval);
+            broadcastLog('🛑 Stopped daily matches scraper');
+        }
+        if (this.liveInterval) {
+            clearInterval(this.liveInterval);
+            broadcastLog('🛑 Stopped live matches scraper');
+        }
+    }
+}
+
+// Usage
+const scraper = new MatchScraper();
+
+// For graceful shutdown
+process.on('SIGTERM', () => {
+    scraper.cleanup();
+    process.exit(0);
 });
