@@ -1,30 +1,22 @@
 import express from 'express';
-import cors from 'cors';
-import routes from './routes';
-import { setupSwagger } from './swagger';
-import { createServer } from 'http';
-import { Server } from 'ws';
+import http from 'http';
+import WebSocket from 'ws';
+import { startBot, stopBot } from './botController';
 import setupWebSocket from './wsServer';
 
 const app = express();
-const server = createServer(app);
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
 
-// Create WebSocket server
-const wss = new Server({ server });
+// Setup WebSocket
 setupWebSocket(wss);
 
-app.use(cors());
-app.use(express.json());
+// REST endpoints
+app.post('/start', startBot);
+app.post('/stop', stopBot);
 
-// Routes
-app.use('/', routes);
-
-// Swagger setup
-setupSwagger(app);
-
-const PORT = process.env.PORT || 4000;
+// Start server
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Swagger UI available at http://localhost:${PORT}/api-docs`);
-  console.log(`WebSocket server running on ws://localhost:${PORT}`);
-});s
+  console.log(`✅ Bot Service running on port ${PORT}`);
+});
