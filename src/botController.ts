@@ -5,24 +5,54 @@ let botRunning = false;
 
 const mockBotProcess = async () => {
   while (botRunning && hasClients()) {
-    broadcastLog(`⚽ Bot is working... ${new Date().toISOString()}`);
+    const logMessage = `⚽ Bot is working... ${new Date().toISOString()}`;
+    console.log(logMessage); // Log to server console
+    broadcastLog(logMessage); // Send to frontend
     await new Promise((res) => setTimeout(res, 1000));
   }
 };
 
 export const startBot = (req: Request, res: Response) => {
   if (botRunning) {
-    return res.status(400).json({ message: 'Bot already running' });
+    const message = 'Bot already running';
+    broadcastLog(message);
+    return res.status(400).json({
+      success: false,
+      data: null,
+      message,
+    });
   }
+
   botRunning = true;
   mockBotProcess();
-  res.json({ message: 'Bot started' });
+  const message = 'Bot started';
+  broadcastLog(message);
+
+  return res.status(200).json({
+    success: true,
+    data: { status: 'running' },
+    message,
+  });
 };
 
 export const stopBot = (req: Request, res: Response) => {
   if (!botRunning) {
-    return res.status(400).json({ message: 'Bot not running' });
+    const message = 'Bot not running';
+    broadcastLog(message);
+    return res.status(400).json({
+      success: false,
+      data: null,
+      message,
+    });
   }
+
   botRunning = false;
-  res.json({ message: 'Bot stopped' });
+  const message = 'Bot stopped';
+  broadcastLog(message);
+
+  return res.status(200).json({
+    success: true,
+    data: { status: 'stopped' },
+    message,
+  });
 };

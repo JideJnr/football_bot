@@ -15,9 +15,15 @@ const setupWebSocket = (wss: Server) => {
 };
 
 export const broadcastLog = (message: string) => {
+  const logMessage = JSON.stringify({
+    type: 'log',
+    data: message,
+    timestamp: new Date().toISOString()
+  });
+  
   clients.forEach((client) => {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(message);
+      client.send(logMessage);
     }
   });
 };
