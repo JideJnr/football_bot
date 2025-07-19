@@ -9,7 +9,7 @@ let botRunning = false;
 // Bot lifecycle
 export const startBot = async (req: Request, res: Response) => {
   if (botRunning) {
-    return res.status(409).json({
+    return res.status(200).json({
       error: 'BOT_ALREADY_RUNNING',
       message: 'Scraper is already running.'
     });
@@ -40,7 +40,7 @@ export const startBot = async (req: Request, res: Response) => {
 
 export const stopBot = async (req: Request, res: Response) => {
   if (!botRunning || !scraper) {
-    return res.status(410).json({
+    return res.status(200).json({
       error: 'BOT_NOT_RUNNING',
       message: 'Scraper bot is already stopped.'
     });
@@ -66,30 +66,10 @@ export const stopBot = async (req: Request, res: Response) => {
   }
 };
 
-export const getStatus = async (req: Request, res: Response) => {
-  try {
-    if (!botRunning) {
-      return res.status(200).json({
-        success: true,
-        message: 'Bot is stopped',
-        data: {
-          running: false
-        }
-      });
-    }
-    return res.status(200).json({
-      success: true,
-      message: 'Bot is running',
-      data: {
-        running: true
-      }
-    });
-
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: 'Failed to get bot status',
-      error: error instanceof Error ? error.message : 'Unknown error'
-    });
-  }
+export const getStatus = (_req: Request, res: Response) => {
+  return res.status(200).json({
+    success: true,
+    message: botRunning ? 'Bot is running' : 'Bot is stopped',
+    data: { running: botRunning }
+  });
 };
