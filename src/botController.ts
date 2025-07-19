@@ -65,3 +65,31 @@ export const stopBot = async (req: Request, res: Response) => {
     });
   }
 };
+
+export const getStatus = async (req: Request, res: Response) => {
+  try {
+    if (!botRunning) {
+      return res.status(200).json({
+        success: true,
+        message: 'Bot is stopped',
+        data: {
+          running: false
+        }
+      });
+    }
+    return res.status(200).json({
+      success: true,
+      message: 'Bot is running',
+      data: {
+        running: true
+      }
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: 'Failed to get bot status',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+};
