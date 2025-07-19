@@ -2,88 +2,78 @@ import { fetchTodayMatches, fetchLiveMatches } from './sportybet';
 import { broadcastLog } from '../wsServer';
 
 export class MatchScraper {
-    private dailyInterval?: NodeJS.Timeout;
-    private liveInterval?: NodeJS.Timeout;
+  private dailyTimeout?: NodeJS.Timeout;
+  private liveInterval?: NodeJS.Timeout;
 
-    constructor() {
-        this.startAllScrapers();
+  constructor() {
+    this.startScrapers();
+  }
+
+  private startScrapers() {
+    broadcastLog('🚀 Bot started. Initializing scrapers...');
+
+    // Scrape today matches now + schedule for midnight daily
+    this.scheduleDailyScrape();
+
+    // Scrape live matches now + every 5 minutes
+    this.scheduleLiveScrape();
+  }
+
+  private scheduleDailyScrape() {
+    const task = async () => {
+      try {
+        broadcastLog('⏳ Fetching today matches...');
+        const todayData = await fetchTodayMatches();
+        broadcastLog(`✅ Today matches: ${todayData.length} events`);
+      } catch (err) {
+        broadcastLog(`⚠️ Today matches error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      }
+    };
+
+    task(); // Immediate run
+
+    const scheduleNext = () => {
+      const now = new Date();
+      const midnight = new Date();
+      midnight.setHours(24, 0, 0, 0);
+      const delay = midnight.getTime() - now.getTime();
+
+      this.dailyTimeout = setTimeout(async () => {
+        await task();
+        scheduleNext(); // Schedule next midnight
+      }, delay);
+    };
+
+    scheduleNext();
+    broadcastLog('📅 Today matches scraper scheduled for midnight');
+  }
+
+  private scheduleLiveScrape() {
+    const task = async () => {
+      try {
+        broadcastLog('🔴 Fetching live matches...');
+        const liveData = await fetchLiveMatches();
+        broadcastLog(`⚡ Live matches: ${liveData.length} events`);
+      } catch (err) {
+        broadcastLog(`⚠️ Live matches error: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      }
+    };
+
+    task(); // Immediate run
+
+    this.liveInterval = setInterval(task, 5 * 60 * 1000); // Every 5 minutes
+    broadcastLog('🔁 Live matches scraper set to run every 5 minutes');
+  }
+
+  public async cleanup() {
+    if (this.dailyTimeout) {
+      clearTimeout(this.dailyTimeout);
+      broadcastLog('🛑 Daily scraper stopped');
     }
 
-    // Core Runner Logic
-    private startAllScrapers() {
-        broadcastLog('🚀 Starting all scrapers...');
-        
-        // 1. Daily Matches Pipeline
-        this.scheduleDailyTask(async () => {
-            try {
-                broadcastLog('⏳ Fetching today matches...');
-                const todayData = await fetchTodayMatches();
-                broadcastLog(`✅ Today matches: ${todayData.length} events`);
-            } catch (err) {
-                broadcastLog(`⚠️ Today matches error: ${err instanceof Error ? err.message : 'Unknown'}`);
-            }
-        });
-
-        // 2. Live Matches Pipeline
-        this.scheduleLiveTask(async () => {
-            try {
-                broadcastLog('🔴 Fetching live matches...');
-                const liveData = await fetchLiveMatches();
-                broadcastLog(`⚡ Live matches: ${liveData.length} events`);
-            } catch (err) {
-                broadcastLog(`⚠️ Live matches error: ${err instanceof Error ? err.message : 'Unknown'}`);
-            }
-        });
+    if (this.liveInterval) {
+      clearInterval(this.liveInterval);
+      broadcastLog('🛑 Live scraper stopped');
     }
-
-    // Scheduler Utilities
-    private scheduleDailyTask(task: () => Promise<void>) {
-        // Immediate first run
-        task();
-        
-        // Then schedule for midnight daily
-        const scheduleNext = () => {
-            const now = new Date();
-            const midnight = new Date();
-            midnight.setHours(24, 0, 0, 0);
-            const msUntilMidnight = midnight.getTime() - now.getTime();
-
-            this.dailyInterval = setTimeout(() => {
-                task();
-                scheduleNext(); // Reschedule for next midnight
-            }, msUntilMidnight);
-        };
-
-        scheduleNext();
-        broadcastLog('⏰ Today matches scraper scheduled (daily at midnight)');
-    }
-
-    private scheduleLiveTask(task: () => Promise<void>) {
-        // Immediate first run
-        task();
-        
-        // Then every 3 minutes
-        this.liveInterval = setInterval(task, 3 * 60 * 1000);
-        broadcastLog('🔄 Live matches scraper started (every 3 minutes)');
-    }
-
-    public cleanup() {
-        if (this.dailyInterval) {
-            clearTimeout(this.dailyInterval);
-            broadcastLog('🛑 Stopped daily matches scraper');
-        }
-        if (this.liveInterval) {
-            clearInterval(this.liveInterval);
-            broadcastLog('🛑 Stopped live matches scraper');
-        }
-    }
+  }
 }
-
-// Usage
-const scraper = new MatchScraper();
-
-// For graceful shutdown
-process.on('SIGTERM', () => {
-    scraper.cleanup();
-    process.exit(0);
-});
