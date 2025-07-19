@@ -19,14 +19,16 @@ export class MasterBot {
     broadcastLog('🟢 MasterBot started (Receiving cleaned data)');
   }
 
-  public async analyze(cleanedMatches: CleanedMatch[]): Promise<AnalyzedMatch[]> {
+  public async analyze(cleanedMatches: CleanedMatch[]): Promise<any[]> {
     broadcastLog(`🔍 MasterBot analyzing ${cleanedMatches.length} matches`);
     return cleanedMatches.map(match => ({
       home: match.home,
       away: match.away,
       strengthRating: 0,
       id: 'A',
-      odds: 3.45
+      odds: 3.45,
+      matchId: 'ete',
+      
     }));
   }
 

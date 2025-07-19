@@ -14,9 +14,12 @@ export interface CleanedMatch {
 }
 
 export interface AnalyzedMatch {
-  home: string;
-  away: string;
-  strengthRating: number;
+    matchId: string;
+    predictedOutcome: string;
+    confidence: number;
+    engine: string;
+    reasoning: string;
+    timestamp: Date;
 }
 export interface MatchData {
   id: string;

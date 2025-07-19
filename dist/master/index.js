@@ -28,7 +28,6 @@ class MasterBot {
             (0, wsServer_1.broadcastLog)('🟢 MasterBot started (Receiving cleaned data)');
         });
     }
-    /** Analyze a batch of cleaned matches and assign a strength rating. */
     analyze(cleanedMatches) {
         return __awaiter(this, void 0, void 0, function* () {
             (0, wsServer_1.broadcastLog)(`🔍 MasterBot analyzing ${cleanedMatches.length} matches`);
@@ -37,7 +36,8 @@ class MasterBot {
                 away: match.away,
                 strengthRating: 0,
                 id: 'A',
-                odds: 3.45
+                odds: 3.45,
+                matchId: 'ete',
             }));
         });
     }

@@ -68,7 +68,7 @@ class GodComplex {
                 confidence: am.confidence,
                 engine: am.engine,
                 reasoning: am.reasoning,
-                timestamp: new Date().toISOString(), // Generate current timestamp
+                timestamp: new Date().toISOString(),
             }));
         });
     }

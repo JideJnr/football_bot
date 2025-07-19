@@ -57,7 +57,7 @@ public async run(analyzedMatches: AnalyzedMatch[]): Promise<Prediction[]> {
     confidence: am.confidence,
     engine: am.engine,
     reasoning: am.reasoning,
-    timestamp: new Date().toISOString(), // Generate current timestamp
+    timestamp: new Date().toISOString(),
   }));
 }
 }
