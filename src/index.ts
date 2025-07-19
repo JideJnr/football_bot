@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import WebSocket from 'ws';
-import { getStatus, startBot, stopBot } from './botController';
+import { betBuilder, getStatus, startBot, stopBot } from './botController';
 import setupWebSocket from './wsServer';
 
 const app = express();
@@ -15,6 +15,7 @@ setupWebSocket(wss);
 app.post('/start', startBot);
 app.post('/stop', stopBot);
 app.post('/getStatus', getStatus);
+app.post('/betBuilder', betBuilder);
 
 // Start server
 const PORT = process.env.PORT || 3001;

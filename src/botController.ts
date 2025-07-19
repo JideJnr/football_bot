@@ -78,3 +78,12 @@ export const getStatus = (_req: Request, res: Response) => {
     data: { running: botRunning }
   });
 };
+
+export const betBuilder = (_req: Request, res: Response) => {
+  return res.status(200).json({
+    success: true,
+    message: botRunning ? 'Bot is running' : 'Bot is stopped',
+    data: { running: botRunning }
+  });
+};
+
