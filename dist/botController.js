@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getStatus = exports.stopBot = exports.startBot = void 0;
+exports.betBuilder = exports.getStatus = exports.stopBot = exports.startBot = void 0;
 const index_1 = require("./master/index"); // 
 // State
 let masterBot = null;
@@ -82,3 +82,11 @@ const getStatus = (_req, res) => {
     });
 };
 exports.getStatus = getStatus;
+const betBuilder = (_req, res) => {
+    return res.status(200).json({
+        success: true,
+        message: botRunning ? 'Bot is running' : 'Bot is stopped',
+        data: { running: botRunning }
+    });
+};
+exports.betBuilder = betBuilder;

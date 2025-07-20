@@ -119,3 +119,47 @@ export interface ResponseLogger {
 export interface SaveToDB {
   (verdicts: Verdict[]): Promise<void>;
 }
+
+interface MatchEvent {
+  minute: number;
+  homeShots?: number;
+  awayShots?: number;
+  homeCorners?: number;
+  awayCorners?: number;
+  homeYellowCards?: number;
+  awayYellowCards?: number;
+  homeRedCards?: number;
+  awayRedCards?: number;
+  homeGoals?: number;
+  awayGoals?: number;
+  possession?: {
+    home: number;
+    away: number;
+  };
+}
+
+interface MatchState {
+  id: string;
+  currentMinute: number;
+  totalHomeShots: number;
+  totalAwayShots: number;
+  totalHomeCorners: number;
+  totalAwayCorners: number;
+  homeYellowCards: number;
+  awayYellowCards: number;
+  homeRedCards: number;
+  awayRedCards: number;
+  homeGoals: number;
+  awayGoals: number;
+  possession: {
+    home: number;
+    away: number;
+  };
+  signals: string[];
+}
+
+interface SignalConfig {
+  name: string;
+  condition: (state: MatchState, event: MatchEvent) => boolean;
+  generateMessage: (state: MatchState, event: MatchEvent) => string;
+}

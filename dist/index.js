@@ -17,6 +17,7 @@ const wss = new ws_1.default.Server({ server });
 app.post('/start', botController_1.startBot);
 app.post('/stop', botController_1.stopBot);
 app.post('/getStatus', botController_1.getStatus);
+app.post('/betBuilder', botController_1.betBuilder);
 // Start server
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {

@@ -1,16 +1,16 @@
-import { fetchTodayMatches } from './runners/sportybet';
-import { BasicMatchCleaner } from './cleaners/BasicMatchCleaner';
-import { MasterBot } from './master';
-import { GodComplex } from './gods_complex';
-import { JudgeEngine } from './gods_complex/engines/judge';
-import { ResponseLogger } from './gods_complex/responses';
-import { saveToDB } from './db/save';
+import { fetchLiveMatches } from '../../runners/sportybet';
+import { BasicMatchCleaner } from '../../cleaners/BasicMatchCleaner';
+import { SignalBot } from '../../signal';
+import { GodComplex } from '../../gods_complex';
+import { JudgeEngine } from '../../gods_complex/engines/judge';
+import { ResponseLogger } from '../../gods_complex/responses';
+import { saveToDB } from '../../db/save';
 
-import { RawMatch, CleanedMatch, AnalyzedMatch, Prediction, Verdict } from './type/types';
+import { RawMatch, CleanedMatch, AnalyzedMatch, Prediction, Verdict } from '../../type/types';
 
-async function main() {
+async function live() {
   // 1. Scrape
-  const rawMatches: RawMatch[] = await fetchTodayMatches();
+  const rawMatches: RawMatch[] = await fetchLiveMatches();
 
   // 2. Clean
   const cleaner = new BasicMatchCleaner();
@@ -19,8 +19,8 @@ async function main() {
   );
 
   // 3. MasterBot Analysis
-  const masterBot = new MasterBot();
-  const analyzedMatches: AnalyzedMatch[] = await masterBot.analyze(cleanedMatches);
+  const signalBot = new SignalBot();
+  const analyzedMatches: AnalyzedMatch[] = await signalBot.analyze(cleanedMatches);
 
   // 4. Prediction (GodComplex)
   const godComplex = new GodComplex();
@@ -42,4 +42,4 @@ async function main() {
   console.log('Pipeline complete.');
 }
 
-main().catch(console.error);
+live().catch(console.error);
