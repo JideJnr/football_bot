@@ -1,11 +1,11 @@
-import { fetchTodayMatches } from '../runners/sportybet';
-import { BasicMatchCleaner } from '../cleaners/BasicMatchCleaner';
-import { GodComplex } from '../gods_complex';
-import { JudgeEngine } from '../gods_complex/engines/judge';
-import { ResponseLogger } from '../gods_complex/responses';
-import { saveToDB } from '../db/save';
-import { RawMatch, CleanedMatch, AnalyzedMatch, Prediction, Verdict } from '../type/types';
-import { SignalBot } from '../signal';
+import { fetchTodayMatches } from '../../runners/sportybet';
+import { BasicMatchCleaner } from '../../cleaners/BasicMatchCleaner';
+import { GodComplex } from '../../gods_complex';
+import { JudgeEngine } from '../../gods_complex/engines/judge';
+import { ResponseLogger } from '../../gods_complex/responses';
+import { saveToDB } from '../../db/save';
+import { RawMatch, CleanedMatch, AnalyzedMatch, Prediction, Verdict } from '../../type/types';
+import { SignalBot } from '../../signal';
 
 async function finished() {
   // 1. Scrape
