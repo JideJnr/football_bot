@@ -1,4 +1,6 @@
-// types.ts (example)
+export type EngineVerdict = any;
+export type PredictionResult = 'Success' | 'Failure' | 'Pending';
+
 export interface RawMatch {
   id: string;
   homeTeam: string;
@@ -38,22 +40,6 @@ export interface Verdict {
   reason: string;
 }
 
-// src/types/types.ts
-export type EngineVerdict = any;
-export type PredictionResult = 'Success' | 'Failure' | 'Pending';
-
-export interface MatchData {
-  id: string;
-  home: string;
-  away: string;
-  odds: {
-    home: number;
-    draw: number;
-    away: number;
-  };
-  // Add other match properties as needed
-}
-
 export interface EngineVerdict {
   engine: string;
   predictedOutcome: EngineVerdict;
@@ -82,7 +68,7 @@ export interface Prediction {
 
 interface IMatchCleaner {
   cleanAndSave(rawMatches: RawMatch[]): Promise<CleanedMatch[]>;
-    clean(raw: any): any;
+  clean(raw: any): any;
 }
 
 export interface IMatchScraper {
@@ -91,13 +77,16 @@ export interface IMatchScraper {
   scheduleDailyScrape(): void;
   scheduleLiveScrape(): void;
 }   
+
 export interface IMatchAnalyzer {
   analyze(matches: MatchData[], dataType: 'today' | 'live'): Promise<PredictionResult[]>;
   run(analyzedMatches: AnalyzedMatch[]): Promise<Prediction[]>;
 }   
+
 export interface IEngine {
   analyze(match: MatchData, dataType: 'today' | 'live'): Promise<Prediction>;
 } 
+
 export interface IEngineVerdict {
   matchId: string;
   predictedOutcome: EngineVerdict;

@@ -53,21 +53,21 @@ export class BetBuilder {
     private sniperStrategy(): Prediction[] {
         return this.predictions.filter(pred => {
             const verdict = this.verdicts.find(v => v.matchId === pred.matchId);
-            return verdict?.decision === 'safe';
+            return verdict?.decision === 0.80;
         });
     }
 
     private sureStrategy(): Prediction[] {
         return this.predictions.filter(pred => {
             const verdict = this.verdicts.find(v => v.matchId === pred.matchId);
-            return verdict?.decision === 'safe';
+            return verdict?.decision === 0.80;
         });
     }
 
     private opportunistStrategy(): Prediction[] {
         return this.predictions.filter(pred => {
             const verdict = this.verdicts.find(v => v.matchId === pred.matchId);
-            return verdict?.decision === 'risky';
+            return verdict?.decision === 0.79;
         });
     }
 }
