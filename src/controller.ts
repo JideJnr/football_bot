@@ -1,160 +1,223 @@
 import { Request, Response } from 'express';
+import {
+  startSportybetFootballBot,
+  stopSportybetFootballBot,
+  getSportybetFootballStatus,
+} from './bots/sporty/index';
+
+// Bot and controller types
+interface Bot {
+  id: string;
+  name: keyof typeof botControllerMap;
+  status: boolean;
+}
+
+interface BotController {
+  start: () => Promise<void>;
+  stop: () => void;
+  status: () => boolean;
+}
+
+const botControllerMap: Record<string, BotController> = {
+  sportybet_football: {
+    start: startSportybetFootballBot,
+    stop: stopSportybetFootballBot,
+    status: getSportybetFootballStatus,
+  },
+};
+
+const bots: Bot[] = [
+  { id: 'sportybet_football', name: 'sportybet_football', status: false },
+];
 
 let engineStatus = false;
 
-let bots = [
-  {id: '001', name:'sportybet_football' , status : false},
-  {id: '002', name:'sportybet_basketball' , status : false},
-  {id: '003', name:'sportybet_tennis' , status : false},
-]
+const findBotById = (id: string) => bots.find(bot => bot.id === id);
 
 export const startEngine = async (res: Response) => {
-
-    if (engineStatus) {
-      return res.status(200).json({
-        success: false,
-        status: 'ENGINE_ALREADY_RUNNING',
-        message: 'Engine is already running.'
-      });
-    }
-
+  if (engineStatus) {
     return res.status(200).json({
       success: false,
-      status: 'ENGINE_STARTED',
-      message: 'Engine has started.'
+      status: 'ENGINE_ALREADY_RUNNING',
+      message: 'Engine is already running.',
     });
-
+  }
+  engineStatus = true;
+  for (const bot of bots) {
+    const controller = botControllerMap[bot.name];
+    if (controller?.start) {
+      await controller.start();
+      bot.status = true;
+    }
+  }
+  return res.status(200).json({
+    success: true,
+    status: 'ENGINE_STARTED',
+    message: 'Engine has started and all bots are running.',
+    bots,
+  });
 };
 
-export const stopEngine = async ( res: Response) => {
+export const stopEngine = async (res: Response) => {
   if (!engineStatus) {
     return res.status(200).json({
       success: false,
-      error: 'BOT_NOT_RUNNING',
-      message: 'Engine is not running.'
+      error: 'ENGINE_NOT_RUNNING',
+      message: 'Engine is not running.',
     });
   }
-
-  // stop all bot actions then return message to frontend 
-
-      return res.status(200).json({
-      success: false,
-      status: 'ENGINE_STOPPED',
-      message: 'Engine has stopped.'
-    });
-};
-
-export const getAllBot = async (res: Response) => {
-    return res.status(200).json({
-      success: false,
-      message: 'bot list fetched successfully.',
-      data: bots
-    });
-
+  for (const bot of bots) {
+    const controller = botControllerMap[bot.name];
+    if (controller?.stop) {
+      await controller.stop();
+      bot.status = false;
+    }
+  }
+  engineStatus = false;
+  return res.status(200).json({
+    success: true,
+    status: 'ENGINE_STOPPED',
+    message: 'Engine has stopped and all bots are shut down.',
+    bots,
+  });
 };
 
 export const startBotById = async (req: Request, res: Response) => {
-  const {id} = req.body
-
-  if (engineStatus ) {
-    return res.status(200).json({
+  const { id } = req.body;
+  if (!engineStatus) {
+    return res.status(400).json({
       success: false,
-      status: 'BOT_NOT_RUNNING',
-      message: 'engine is not running.'
+      status: 'ENGINE_NOT_RUNNING',
+      message: 'Engine must be running to start a bot.',
     });
   }
-
-    return res.status(200).json({
-      success: true,
-      status: 'BOT_LAUNCHED',
-      message: 'Bot has started...'
-    });
-
-
+  const bot = findBotById(id);
+  if (!bot) {
+    return res.status(404).json({ success: false, message: 'Bot not found.' });
+  }
+  if (bot.status) {
+    return res.status(200).json({ success: false, message: 'Bot is already running.' });
+  }
+  const controller = botControllerMap[bot.name];
+  if (controller?.start) {
+    await controller.start();
+    bot.status = true;
+  }
+  return res.status(200).json({
+    success: true,
+    message: `Bot ${bot.name} has been started.`,
+    data: bot,
+  });
 };
 
 export const stopBotById = async (req: Request, res: Response) => {
-  const {id} = req.body
-
-
-
+  const { id } = req.body;
   if (!engineStatus) {
-    return res.status(200).json({
+    return res.status(400).json({
       success: false,
-      error: 'BOT_NOT_RUNNING',
-      message: 'Engine is not running.'
+      error: 'ENGINE_NOT_RUNNING',
+      message: 'Engine must be running to stop a bot.',
+    });
+  }
+  const bot = findBotById(id);
+  if (!bot) {
+    return res.status(404).json({ success: false, message: 'Bot not found.' });
+  }
+  if (!bot.status) {
+    return res.status(200).json({ success: false, message: 'Bot is already stopped.' });
+  }
+  const controller = botControllerMap[bot.name];
+  if (controller?.stop) {
+    await controller.stop();
+    bot.status = false;
+  }
+  return res.status(200).json({
+    success: true,
+    message: `Bot ${bot.name} has been stopped.`,
+    data: bot,
+  });
+};
+
+export const getAllBot = async ( res: Response) => {
+  
+  if (!engineStatus) {
+    return res.status(400).json({
+      success: false,
+      status: 'ENGINE_NOT_RUNNING',
+      message: 'Engine must be running to start a bot.',
     });
   }
 
-    return res.status(200).json({
-      success: true,
-      status: 'BOT_SHUTDOWN',
-      message: 'Bot has stop running...'
-    });
-
+ 
+  return res.status(200).json({
+    success: true,
+    message: `Bot list fetched has been started.`,
+    data: bots,
+  });
 };
 
 export const getStatusById = (req: Request, res: Response) => {
-  const {id} = req.body
-  if (!engineStatus) {
-    return res.status(200).json({
-      success: false,
-      error: 'BOT_NOT_RUNNING',
-      message: 'Engine is not running.'
-    });
+  const { id } = req.body;
+  const bot = findBotById(id);
+  if (!bot) {
+    return res.status(404).json({ success: false, message: 'Bot not found.' });
   }
-
+  const controller = botControllerMap[bot.name];
+  if (controller?.status) {
+    bot.status = controller.status();
+  }
   return res.status(200).json({
     success: true,
-    message: engineStatus ? 'Bot is active': 'bot is not active',
-    data: { running: engineStatus }
+    message: `Bot ${bot.name} is ${bot.status ? 'running' : 'not running'}.`,
+    data: bot,
   });
-
-
 };
 
 export const runBetBuilder = (req: Request, res: Response) => {
-  const {type} = req.body
+  const { type } = req.body;
   if (!engineStatus) {
     return res.status(400).json({
       success: false,
-      message: 'Bot not running or predictions unavailable.',
+      message: 'Engine is not running.',
     });
   }
+  // TODO: Implement bet builder logic
+  console.log(`Bet builder type: ${type}`);
   return res.status(200).json({
     success: true,
     message: 'Bet slip generated.',
-  
   });
 };
 
-export const postPrediction  = (req: Request, res: Response) => {
-  const {data} = req.body
+export const postPrediction = (req: Request, res: Response) => {
+  const { data } = req.body;
   if (!engineStatus) {
     return res.status(400).json({
       success: false,
-      message: 'Bot not running or predictions unavailable.',
+      message: 'Engine is not running.',
     });
   }
+  // TODO: Implement prediction logic
+  console.log('Received prediction:', data);
   return res.status(200).json({
     success: true,
-    message: 'Bet slip generated.',
-  
+    message: 'Prediction received.',
   });
 };
 
-export const getPredictionById  = (req: Request, res: Response) => {
-  const {id} = req.body
-
+export const getPredictionById = (req: Request, res: Response) => {
+  const { id } = req.body;
   if (!engineStatus) {
     return res.status(400).json({
       success: false,
-      message: 'Bot not running or predictions unavailable.',
+      message: 'Engine is not running.',
     });
   }
+  // TODO: Fetch prediction by ID
+  console.log(`Fetching prediction for bot: ${id}`);
   return res.status(200).json({
     success: true,
-    message: 'Bet slip generated.',
-  
+    message: 'Prediction fetched.',
+    data: { id }, // Replace with real prediction data
   });
 };

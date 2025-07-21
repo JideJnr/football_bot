@@ -13,6 +13,9 @@ export interface CleanedMatch {
   home: string;
   away: string;
   odds: number[];
+  statistics?: any; 
+  odds?: { home: number; draw: number; away: number }; // Change from number[] to object
+  score?: { home: number; away: number }; // Add if needed
 }
 
 export interface AnalyzedMatch {
