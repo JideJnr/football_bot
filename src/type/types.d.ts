@@ -155,3 +155,16 @@ interface SignalConfig {
   condition: (state: MatchState, event: MatchEvent) => boolean;
   generateMessage: (state: MatchState, event: MatchEvent) => string;
 }
+
+// Bot and controller types
+export interface Bot {
+  id: string;
+  name: keyof typeof botControllerMap;
+  status: boolean;
+}
+
+export interface BotController {
+  start: () => Promise<void>;
+  stop: () => void;
+  status: () => boolean;
+}

@@ -18,26 +18,7 @@ export async function today() {
     cleaner.clean(match)
   );
 
-  // 3. MasterBot Analysis
-  const masterBot = new SignalBot();
-  const analyzedMatches: AnalyzedMatch[] = await masterBot.analyze(cleanedMatches);
-
-  // 4. Prediction (GodComplex)
-  const godComplex = new GodComplex();
-  const predictions: Prediction[] = await godComplex.run(analyzedMatches);
-
-  // 5. Judge
-  const judge = new JudgeEngine();
-  const verdicts: Prediction[] = await Promise.all(
-    predictions.map((prediction: Prediction) => judge.deliverVerdict([prediction]))
-  );
-
-  // 6. Log
-  const logger = new ResponseLogger();
-  verdicts.forEach((verdict: Prediction) => logger.logResponse(verdict));
-
-  // 7. Save to DB (stub)
-  await saveToDB(verdicts);
+  await saveToDB(cleanedMatches);
 
   console.log('Pipeline complete.');
 }

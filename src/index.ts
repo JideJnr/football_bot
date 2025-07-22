@@ -19,7 +19,7 @@ app.get('/start/id', startBotById)
 app.get('/stop/id', stopBotById)
 app.post('/getStatus/id', getStatusById);
 app.post('/betBuilder', runBetBuilder);
-app.post('/prediction/id', postPrediction);
+app.post('/prediction', postPrediction);
 app.get('/prediction/id', getPredictionById);
 
 // Start server

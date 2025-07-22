@@ -210,13 +210,7 @@ export class SignalBot {
         // Create the analyzed match object
         const analyzedMatch: AnalyzedMatch = {
             ...match,
-            signals,
-            // Add any additional properties expected in AnalyzedMatch
-            // For example:
-            strengthRating: 0, // Default value
-            odds: 0, // Default value
-            matchId: match.id, // Assuming matchId should be the same as id
-            // Add any other properties required by AnalyzedMatch
+            signals
         };
 
         analyzedMatches.push(analyzedMatch);

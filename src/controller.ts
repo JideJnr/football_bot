@@ -4,6 +4,7 @@ import {
   stopSportybetFootballBot,
   getSportybetFootballStatus,
 } from './bots/sporty/index';
+import { getTestStatus, startTestBot, stopTestBot } from './bots/test';
 
 // Bot and controller types
 interface Bot {
@@ -24,10 +25,16 @@ const botControllerMap: Record<string, BotController> = {
     stop: stopSportybetFootballBot,
     status: getSportybetFootballStatus,
   },
+  test_bot: {
+    start: startTestBot,
+    stop: stopTestBot,
+    status: getTestStatus,
+  },
 };
 
 const bots: Bot[] = [
   { id: 'sportybet_football', name: 'sportybet_football', status: false },
+  { id: 'bot_test', name: 'bot_test', status: false },
 ];
 
 let engineStatus = false;
