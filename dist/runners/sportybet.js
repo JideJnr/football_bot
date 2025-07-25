@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchEndofDayMatches = exports.fetchTodayMatches = exports.fetchLiveMatches = void 0;
+exports.fetchMatchDetails = exports.fetchEndofDayMatches = exports.fetchTodayMatches = exports.fetchLiveMatches = void 0;
 const axios_1 = __importDefault(require("axios"));
 const fetchLiveMatches = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -24,7 +24,7 @@ const fetchLiveMatches = () => __awaiter(void 0, void 0, void 0, function* () {
                 'Origin': 'https://www.sportybet.com',
             },
         });
-        const data = response.data;
+        const data = response.data.data;
         return data;
     }
     catch (err) {
@@ -48,7 +48,7 @@ const fetchTodayMatches = () => __awaiter(void 0, void 0, void 0, function* () {
                 'Origin': 'https://www.sportybet.com',
             },
         });
-        const data = response.data;
+        const data = response.data.data;
         return data;
     }
     catch (err) {
@@ -72,7 +72,7 @@ const fetchEndofDayMatches = () => __awaiter(void 0, void 0, void 0, function* (
                 'Origin': 'https://www.sportybet.com',
             },
         });
-        const data = response.data;
+        const data = response.data.data;
         return data;
     }
     catch (err) {
@@ -86,3 +86,29 @@ const fetchEndofDayMatches = () => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.fetchEndofDayMatches = fetchEndofDayMatches;
+const fetchMatchDetails = (eventId) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const encodedEventId = encodeURIComponent(eventId);
+        const timestamp = Date.now();
+        const url = `https://www.sportybet.com/api/ng/factsCenter/event?eventId=${encodedEventId}&productId=1&_t=${timestamp}`;
+        const response = yield axios_1.default.get(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0',
+                'Accept': 'application/json',
+                'Referer': 'https://www.sportybet.com/',
+                'Origin': 'https://www.sportybet.com',
+            }
+        });
+        return response.data.data;
+    }
+    catch (err) {
+        if (err instanceof Error) {
+            console.error(`Error fetching details for ${eventId}:`, err.message);
+        }
+        else {
+            console.error(`Unknown error fetching details for ${eventId}`);
+        }
+        throw err;
+    }
+});
+exports.fetchMatchDetails = fetchMatchDetails;

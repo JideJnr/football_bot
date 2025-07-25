@@ -3,7 +3,7 @@ import { GodComplex } from '../../gods_complex';
 import { ResponseLogger } from '../../gods_complex/responses';
 import { saveToDB } from '../../db/save';
 import { RawMatch, CleanedMatch, AnalyzedMatch, Prediction, Verdict } from '../../type/types';
-import { BasicMatchCleaner } from '../../gods_complex/engines/cleaners';
+import { BasicMatchCleaner } from '../../cleaners';
 import { JudgeEngine } from '../../gods_complex/engines/judge';
 import { SignalBot } from '../../gods_complex/engines/signal';
 

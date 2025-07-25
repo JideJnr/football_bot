@@ -14,7 +14,7 @@ const sportybet_1 = require("../../runners/sportybet");
 const gods_complex_1 = require("../../gods_complex");
 const responses_1 = require("../../gods_complex/responses");
 const save_1 = require("../../db/save");
-const cleaners_1 = require("../../gods_complex/engines/cleaners");
+const MatchCleaner_1 = require("../../cleaners/MatchCleaner");
 const judge_1 = require("../../gods_complex/engines/judge");
 const signal_1 = require("../../gods_complex/engines/signal");
 function today() {
@@ -22,7 +22,7 @@ function today() {
         // 1. Scrape
         const rawMatches = yield (0, sportybet_1.fetchTodayMatches)();
         // 2. Clean
-        const cleaner = new cleaners_1.BasicMatchCleaner();
+        const cleaner = new MatchCleaner_1.MatchCleaner();
         const cleanedMatches = rawMatches.map((match) => cleaner.clean(match));
         // 3. MasterBot Analysis
         const masterBot = new signal_1.SignalBot();

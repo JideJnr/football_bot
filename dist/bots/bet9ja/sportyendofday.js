@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.finished = finished;
 const sportybet_1 = require("../../runners/sportybet");
 const save_1 = require("../../db/save");
-const cleaners_1 = require("../../gods_complex/engines/cleaners");
+const cleaners_1 = require("../../cleaners");
 const signal_1 = require("../../gods_complex/engines/signal");
 function finished() {
     return __awaiter(this, void 0, void 0, function* () {

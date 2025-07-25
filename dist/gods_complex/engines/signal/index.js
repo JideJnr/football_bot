@@ -198,10 +198,7 @@ class SignalBot {
                 // Process the event to generate signals
                 const signals = this.processMatchEvent(match.id, syntheticEvent);
                 // Create the analyzed match object
-                const analyzedMatch = Object.assign(Object.assign({}, match), { signals, 
-                    // Add any additional properties expected in AnalyzedMatch
-                    // For example:
-                    strengthRating: 0, odds: 0, matchId: match.id });
+                const analyzedMatch = Object.assign(Object.assign({}, match), { signals });
                 analyzedMatches.push(analyzedMatch);
                 // Clean up
                 this.endMatch(match.id);

@@ -1,25 +1,44 @@
-import { fetchTodayMatches } from '../../runners/sportybet';
-import { GodComplex } from '../../gods_complex';
-import { ResponseLogger } from '../../gods_complex/responses';
-import { saveToDB } from '../../db/save';
 
-import { RawMatch, CleanedMatch, AnalyzedMatch, Prediction, Verdict } from '../../type/types';
-import { BasicMatchCleaner } from '../../gods_complex/engines/cleaners';
-import { JudgeEngine } from '../../gods_complex/engines/judge';
-import { SignalBot } from '../../gods_complex/engines/signal';
+import { saveToDB } from '../../db/save';
+import { MatchCleaner } from '../../cleaners/MatchCleaner';
+import { RawMatchSummary, RawMatchDetailed, CleanedMatch } from '../../type/types';
+import { fetchMatchDetails, fetchTodayMatches } from '../../runners/sportybet';
 
 export async function today() {
-  // 1. Scrape
-  const rawMatches: RawMatch[] = await fetchTodayMatches();
+  try {
+    // 1. Fetch summary data
+    const rawSummaries: RawMatchSummary[] = await fetchTodayMatches();
+    console.log(`Fetched ${rawSummaries.length} match summaries`);
+    if (rawSummaries.length === 0) {
+      console.log('No matches found for today');
+      return;
+    }
+    const rawMatches: RawMatchDetailed[] = [];
+    
+    for (const summary of rawSummaries) {
+      try {
+        const detailed = await fetchMatchDetails(summary.eventId);
+        rawMatches.push(detailed);
+        console.log(`Fetched details for ${summary.eventId}`);
+        
+        // Add delay to avoid rate limiting (200ms between requests)
+        await new Promise(resolve => setTimeout(resolve, 200));
+      } catch (error) {
+        console.error(`Skipping ${summary.eventId} due to error`);
+      }
+    }
 
-  // 2. Clean
-  const cleaner = new BasicMatchCleaner();
-  const cleanedMatches: CleanedMatch[] = rawMatches.map((match: RawMatch) =>
-    cleaner.clean(match)
-  );
+    // 3. Clean detailed data
+    const cleaner = new MatchCleaner();
+    const cleanedMatches: CleanedMatch[] = rawMatches.map(match => 
+      cleaner.clean(match)
+    );
 
-  await saveToDB(cleanedMatches);
+    // 4. Save to database
+    await saveToDB(cleanedMatches);
+    console.log(`Saved ${cleanedMatches.length} detailed matches`);
 
-  console.log('Pipeline complete.');
+  } catch (error) {
+    console.error('Pipeline failed:', error);
+  }
 }
-

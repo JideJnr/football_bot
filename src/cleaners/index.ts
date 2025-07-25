@@ -1,5 +1,5 @@
 import { BasicMatchCleaner } from './basicCleaner';
-import { IMatchCleaner } from '../../../type/types';
+import { IMatchCleaner } from '../type/types';
 
 class CleanerManager {
   private cleaners: IMatchCleaner[];

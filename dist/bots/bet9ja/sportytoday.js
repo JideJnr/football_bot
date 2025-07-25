@@ -14,7 +14,7 @@ const sportybet_1 = require("../../runners/sportybet");
 const gods_complex_1 = require("../../gods_complex");
 const responses_1 = require("../../gods_complex/responses");
 const save_1 = require("../../db/save");
-const cleaners_1 = require("../../gods_complex/engines/cleaners");
+const cleaners_1 = require("../../cleaners");
 const judge_1 = require("../../gods_complex/engines/judge");
 const signal_1 = require("../../gods_complex/engines/signal");
 function today() {

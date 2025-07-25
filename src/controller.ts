@@ -5,19 +5,9 @@ import {
   getSportybetFootballStatus,
 } from './bots/sporty/index';
 import { getTestStatus, startTestBot, stopTestBot } from './bots/test';
+import { Bot, BotController } from './type/types';
 
-// Bot and controller types
-interface Bot {
-  id: string;
-  name: keyof typeof botControllerMap;
-  status: boolean;
-}
 
-interface BotController {
-  start: () => Promise<void>;
-  stop: () => void;
-  status: () => boolean;
-}
 
 const botControllerMap: Record<string, BotController> = {
   sportybet_football: {

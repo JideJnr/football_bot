@@ -168,3 +168,107 @@ export interface BotController {
   stop: () => void;
   status: () => boolean;
 }
+
+export interface Bot {
+  id: string;
+  name: string;
+  status: boolean;
+}
+
+export interface BotController {
+  start: () => Promise<void>;
+  stop: () => void;
+  status: () => boolean;
+}
+
+// src/services/sportybet/types.ts
+export interface RawMatchSummary {
+  eventId: string;
+  homeTeamName: string;
+  awayTeamName: string;
+  status: number;
+  setScore: any;
+  gameScore: string[];
+  period: string;
+  matchStatus: string;
+  playedSeconds: string;
+  estimateStartTime: number;
+  markets: Market[];
+  sport: {
+    category: {
+      tournament: {
+        name: string;
+      };
+    };
+  };
+}
+
+export interface RawMatchDetailed {
+  eventId: string;
+  gameId: string;
+  homeTeamName: string;
+  awayTeamName: string;
+  status: number;
+  setScore: any;
+  gameScore: string[];
+  period: string;
+  matchStatus: string;
+  playedSeconds: string;
+  remainingTimeInPeriod?: string;
+  estimateStartTime: number;
+  markets: Market[];
+  sport: {
+    category: {
+      tournament: {
+        name: string;
+      };
+    };
+  };
+  fixtureVenue?: {
+    name: string;
+  };
+}
+
+export interface Market {
+  id: string;
+  desc: string;
+  specifier?: string;
+  outcomes: Outcome[];
+  lastOddsChangeTime: number;
+  status: number;
+}
+
+export interface Outcome {
+  id: string;
+  desc: string;
+  odds: string;
+  isActive: number;
+}
+
+export interface CleanedMatch {
+  id: string;
+  home: string;
+  away: string;
+  tournament: string;
+  status: number;
+  score: string;
+  period: string;
+  playedSeconds: string;
+  startTime: number;
+  markets: {
+    [marketType: string]: {
+      [specifier: string]: {
+        outcomes: { [outcome: string]: number };
+        lastUpdated: number;
+        status: number;
+      };
+    };
+  };
+  isDetailed: boolean;
+  additionalData?: {
+    gameId: string;
+    matchStatus: string;
+    remainingTime?: string;
+    venue: string;
+  };
+}

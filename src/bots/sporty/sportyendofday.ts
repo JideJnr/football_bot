@@ -1,7 +1,7 @@
 import { fetchEndofDayMatches } from '../../runners/sportybet';
 import { saveToDB } from '../../db/save';
 import { RawMatch, CleanedMatch, AnalyzedMatch, Prediction, Verdict } from '../../type/types';
-import { BasicMatchCleaner } from '../../gods_complex/engines/cleaners';
+import { MatchCleaner } from '../../cleaners/MatchCleaner';
 import { SignalBot } from '../../gods_complex/engines/signal';
 
 export async function finished() {
@@ -9,7 +9,7 @@ export async function finished() {
   const rawMatches: RawMatch[] = await fetchEndofDayMatches();
 
   // 2. Clean
-  const cleaner = new BasicMatchCleaner();
+  const cleaner = new MatchCleaner();
   const cleanedMatches: CleanedMatch[] = rawMatches.map((match: RawMatch) =>
     cleaner.clean(match)
   );
