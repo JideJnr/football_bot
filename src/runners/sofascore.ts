@@ -1,83 +1,38 @@
 import axios from 'axios';
 
-export const fetchLiveMatches = async () => {
-  try {
-    const response = await axios.get(
-      'https://www.sportybet.com/api/ng/factsCenter/liveOrPrematchEvents?sportId=sr:sport:1',
-      {
-        headers: {
-          'User-Agent': 'Mozilla/5.0',
-          'Accept': 'application/json',
-          'Referer': 'https://www.sportybet.com/',
-          'Origin': 'https://www.sportybet.com',
-        },
-      }
-    );
-
-    const data = response.data;
-
-    return data;
-  } 
-   catch (err: unknown) {
-  if (err instanceof Error) {
-    console.error('Error fetching today matches:', err.message);
-  } else {
-    console.error('Unknown error fetching today matches');
-  }
-  return [];
-  }
+const BASE_HEADERS = {
+  'User-Agent': 'Mozilla/5.0',
+  'Accept': 'application/json',
+  'Referer': 'https://www.sofascore.com/',
+  'Origin': 'https://www.sofascore.com'
 };
+
+
+const getTodayDate = () => new Date().toISOString().split('T')[0];
 
 export const fetchTodayMatches = async () => {
+  const today = getTodayDate(); // Dynamically set
   try {
-    const response = await axios.get(
-      'https://www.sportybet.com/api/ng/factsCenter/liveOrPrematchEvents?sportId=sr:sport:1',
-      {
-        headers: {
-          'User-Agent': 'Mozilla/5.0',
-          'Accept': 'application/json',
-          'Referer': 'https://www.sportybet.com/',
-          'Origin': 'https://www.sportybet.com',
-        },
-      }
+    const { data } = await axios.get(
+      `https://www.sofascore.com/api/v1/sport/football/scheduled-events/${today}`,
+      { headers: BASE_HEADERS }
     );
-
-    const data = response.data;
     return data;
-  } catch (err: unknown) {
-  if (err instanceof Error) {
-    console.error('Error fetching today matches:', err.message);
-  } else {
-    console.error('Unknown error fetching today matches');
-  }
-  return [];
+  } catch (err) {
+    console.error(`Error fetching matches for ${today}:`, err instanceof Error ? err.message : 'Unknown error');
+    return [];
   }
 };
 
-export const fetchEndofDayMatches = async () => {
+export const fetchLiveMatches = async () => {
   try {
-    const response = await axios.get(
-      'https://www.sportybet.com/api/ng/factsCenter/liveOrPrematchEvents?sportId=sr:sport:1',
-      {
-        headers: {
-          'User-Agent': 'Mozilla/5.0',
-          'Accept': 'application/json',
-          'Referer': 'https://www.sportybet.com/',
-          'Origin': 'https://www.sportybet.com',
-        },
-      }
+    const { data } = await axios.get(
+      'https://www.sofascore.com/api/v1/sport/football/events/live',
+      { headers: BASE_HEADERS }
     );
-
-    const data = response.data;
     return data;
-  } catch (err: unknown) {
-  if (err instanceof Error) {
-    console.error('Error fetching today matches:', err.message);
-  } else {
-    console.error('Unknown error fetching today matches');
-  }
-  return [];
+  } catch (err) {
+    console.error('Error fetching live matches:', err instanceof Error ? err.message : 'Unknown error');
+    return [];
   }
 };
-
-

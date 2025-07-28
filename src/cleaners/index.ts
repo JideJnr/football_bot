@@ -1,12 +1,12 @@
-import { BasicMatchCleaner } from './basicCleaner';
 import { IMatchCleaner } from '../type/types';
+import { MatchCleaner } from './MatchCleaner';
 
 class CleanerManager {
   private cleaners: IMatchCleaner[];
 
   constructor() {
     this.cleaners = [
-      new BasicMatchCleaner(),
+      new MatchCleaner(),
     ];
   }
 
@@ -17,5 +17,5 @@ class CleanerManager {
   }
 }
 
-export { BasicMatchCleaner, CleanerManager };
+export { MatchCleaner, CleanerManager };
 export type { IMatchCleaner };
