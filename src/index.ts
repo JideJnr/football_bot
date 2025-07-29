@@ -1,7 +1,7 @@
 import express from 'express';
 import http from 'http';
 import WebSocket from 'ws';
-import {  getAllBot, getPredictionById, getStatusById, postPrediction, runBetBuilder, startBotById, startEngine, stopBotById, stopEngine } from './controller';
+import {  getAllBots,getPredictionById,getStatusById,postPrediction, runBetBuilder, startBotById, startEngine, stopBotById, stopEngine } from './controller';
 import setupWebSocket from './wsServer';
 
 const app = express();
@@ -14,7 +14,7 @@ setupWebSocket(wss);
 // REST endpoints
 app.post('/start', startEngine);
 app.post('/stop', stopEngine);
-app.get('/all', getAllBot);
+app.get('/all', getAllBots);
 app.get('/start/id', startBotById)
 app.get('/stop/id', stopBotById)
 app.post('/getStatus/id', getStatusById);
