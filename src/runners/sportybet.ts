@@ -33,7 +33,8 @@ export const fetchLiveMatches = async () => {
         },
       }
     );
-    return response.data.data;
+    console.log(response);
+    return response;
   } catch (err) {
     console.error('Live matches error:', err instanceof Error ? err.message : 'Unknown error');
     return [];
@@ -55,6 +56,7 @@ export const fetchEndofDayMatches = async (count = 20) => {
         },
       }
     );
+    
     return response.data.data;
   } catch (err) {
     console.error('EOD matches error:', err instanceof Error ? err.message : 'Unknown error');

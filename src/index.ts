@@ -15,8 +15,8 @@ setupWebSocket(wss);
 app.post('/start', startEngine);
 app.post('/stop', stopEngine);
 app.get('/all', getAllBots);
-app.get('/start/id', startBotById)
-app.get('/stop/id', stopBotById)
+app.get('/start/:id', startBotById)
+app.get('/stop/:id', stopBotById)
 app.post('/getStatus/id', getStatusById);
 app.post('/betBuilder', runBetBuilder);
 app.post('/prediction', postPrediction);

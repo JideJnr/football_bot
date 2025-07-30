@@ -16,7 +16,7 @@ const BOT_CONTROLLERS: Record<string, BotController> = {
 
 const BOTS: Bot[] = [
   { id: 'sportybet_football', name: 'sportybet_football', status: false },
-  { id: 'test_bot', name: 'test_bot', status: false },
+ 
 ];
 
 // ================ State Management ================
