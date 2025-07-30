@@ -1,4 +1,4 @@
-import { fetchEndofDayMatches } from '../../runners/sportybet';
+import { fetchEndofDayMatches } from '../../../runners/sportybet';
 
 
 export async function finished() {

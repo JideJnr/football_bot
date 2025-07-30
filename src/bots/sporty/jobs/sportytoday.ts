@@ -1,4 +1,4 @@
-import { fetchTodayMatches } from '../../runners/sportybet';
+import { fetchTodayMatches } from '../../../runners/sportybet';
 
 export async function today() {
   const rawMatches = await fetchTodayMatches();
