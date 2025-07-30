@@ -33,7 +33,7 @@ export const fetchLiveMatches = async () => {
         },
       }
     );
-    console.log(response.data.data);
+    console.log(response.data.data.events);
     return response;
   } catch (err) {
     console.error('Live matches error:', err instanceof Error ? err.message : 'Unknown error');
