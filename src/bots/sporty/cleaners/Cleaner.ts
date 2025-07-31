@@ -1,14 +1,6 @@
 import { broadcastLog } from "../../../wsServer";
 
-export interface CleanedMatch extends Omit<RawMatch, 'markets'> {
-  markets: {
-    [marketType: string]: {
-      [specifier: string]: Market & {
-        outcomesMap: { [desc: string]: Outcome };
-      };
-    };
-  };
-}
+
 
 export class ComprehensiveMatchCleaner {
   constructor() {
