@@ -1,3 +1,4 @@
+import { CleanedMatch, Outcome, RawMatch } from "../../../type/types";
 import { broadcastLog } from "../../../wsServer";
 
 

@@ -39,7 +39,7 @@ interface Market {
   marketExtendVOS?: any[];
 }
 
-interface RawMatch {
+export interface RawMatch {
   eventId: string;
   gameId: string;
   productStatus: string;

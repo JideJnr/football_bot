@@ -12,87 +12,104 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LiveMatchDatabaseService = void 0;
 const mongodb_1 = require("mongodb");
 class LiveMatchDatabaseService {
-    constructor(connectionString) {
-        this.dbName = 'sportybet';
-        this.collectionName = 'matches';
-        this.client = new mongodb_1.MongoClient(connectionString);
+    constructor(mongoUri) {
+        this.mongoUri = mongoUri;
+        this.db = null;
+        this.collection = null;
+        this.client = new mongodb_1.MongoClient(this.mongoUri);
     }
     connect() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.client.connect();
+            try {
+                yield this.client.connect();
+                this.db = this.client.db('sportsData');
+                this.collection = this.db.collection('liveMatches');
+                yield this.createIndexes();
+                console.log('✅ MongoDB connected successfully');
+            }
+            catch (error) {
+                console.error('❌ MongoDB connection failed:', error);
+                throw error;
+            }
         });
     }
-    saveMatches(cleanedMatches) {
+    createIndexes() {
         return __awaiter(this, void 0, void 0, function* () {
-            const db = this.client.db(this.dbName);
-            const collection = db.collection(this.collectionName);
-            const bulkOps = cleanedMatches.map(match => {
-                var _a, _b, _c;
-                // Extract static data
-                const staticData = {
-                    homeTeamId: match.homeTeamId,
-                    homeTeamName: match.homeTeamName,
-                    awayTeamId: match.awayTeamId,
-                    awayTeamName: match.awayTeamName,
-                    tournament: {
-                        sportId: match.sport.id,
-                        sportName: match.sport.name,
-                        categoryId: match.sport.category.id,
-                        categoryName: match.sport.category.name,
-                        tournamentId: (_a = match.sport.category.tournament) === null || _a === void 0 ? void 0 : _a.id,
-                        tournamentName: (_b = match.sport.category.tournament) === null || _b === void 0 ? void 0 : _b.name
-                    },
-                    venue: (_c = match.fixtureVenue) === null || _c === void 0 ? void 0 : _c.name,
-                    initialEstimateStartTime: new Date(match.estimateStartTime)
-                };
-                // Prepare current odds snapshot
-                const currentOddsSnapshot = {
-                    timestamp: new Date(),
-                    markets: Object.entries(match.markets).map(([marketType, marketData]) => ({
-                        marketType,
-                        outcomes: Object.values(marketData).flatMap(market => market.outcomes.map(outcome => ({
-                            desc: outcome.desc,
-                            odds: parseFloat(outcome.odds),
-                            probability: parseFloat(outcome.probability),
-                            isActive: outcome.isActive === 1
-                        })))
-                    })),
-                    scoreAtTime: match.setScore,
-                    matchStatusAtTime: match.matchStatus
-                };
-                return {
+            if (!this.collection)
+                return;
+            try {
+                yield this.collection.createIndexes([
+                    { key: { eventId: 1 }, unique: true },
+                    { key: { 'sport.id': 1 } },
+                    { key: { 'sport.category.id': 1 } },
+                    { key: { 'sport.category.tournament.id': 1 } },
+                    { key: { homeTeamId: 1 } },
+                    { key: { awayTeamId: 1 } },
+                    { key: { estimateStartTime: 1 } },
+                    { key: { status: 1 } },
+                    { key: { 'markets': 1 } },
+                    { key: { 'bookingStatus': 1 } }
+                ]);
+                console.log('✅ Database indexes created');
+            }
+            catch (error) {
+                console.error('❌ Failed to create indexes:', error);
+            }
+        });
+    }
+    saveMatches(matches) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.collection) {
+                throw new Error('Database not connected');
+            }
+            try {
+                const bulkOps = matches.map(match => ({
                     updateOne: {
                         filter: { eventId: match.eventId },
-                        update: {
-                            $setOnInsert: {
-                                staticData,
-                                createdAt: new Date()
-                            },
-                            $set: {
-                                'dynamicData.currentStatus': match.status,
-                                'dynamicData.currentScore': match.setScore,
-                                'dynamicData.period': match.period,
-                                'dynamicData.playedSeconds': match.playedSeconds,
-                                'dynamicData.lastUpdated': new Date(),
-                                updatedAt: new Date()
-                            },
-                            $push: {
-                                oddsHistory: {
-                                    $each: [currentOddsSnapshot],
-                                    $slice: -1000 // Keep last 1000 snapshots (adjust as needed)
-                                }
-                            }
-                        },
+                        update: { $set: match },
                         upsert: true
                     }
-                };
-            });
-            yield collection.bulkWrite(bulkOps);
+                }));
+                if (bulkOps.length === 0) {
+                    console.log('⚠️ No matches to save');
+                    return 0;
+                }
+                const result = yield this.collection.bulkWrite(bulkOps);
+                console.log(`✅ Saved ${result.upsertedCount + result.modifiedCount} matches`);
+                return result.upsertedCount + result.modifiedCount;
+            }
+            catch (error) {
+                console.error('❌ Failed to save matches:', error);
+                throw error;
+            }
+        });
+    }
+    getMatchById(eventId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.collection)
+                throw new Error('Database not connected');
+            return this.collection.findOne({ eventId });
+        });
+    }
+    getActiveMatches() {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!this.collection)
+                throw new Error('Database not connected');
+            return this.collection.find({ status: { $in: [1, 2] } }).toArray();
         });
     }
     close() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.client.close();
+            try {
+                yield this.client.close();
+                this.db = null;
+                this.collection = null;
+                console.log('✅ MongoDB connection closed');
+            }
+            catch (error) {
+                console.error('❌ Failed to close connection:', error);
+                throw error;
+            }
         });
     }
 }

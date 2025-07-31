@@ -4,6 +4,7 @@ import {
   stopSportybetFootballBot,
   getSportybetFootballStatus,
 } from './bots/sporty/index';
+import { Bot, BotController } from './type/types';
 
 // ================ Configuration ================
 const BOT_CONTROLLERS: Record<string, BotController> = {
