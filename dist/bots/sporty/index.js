@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getSportybetFootballStatus = exports.stopSportybetFootballBot = exports.startSportybetFootballBot = void 0;
 const node_cron_1 = __importDefault(require("node-cron"));
-const sportyendofday_1 = require("./sportyendofday");
-const sportylive_1 = require("./sportylive");
-const sportytoday_1 = require("./sportytoday");
+const sportyendofday_1 = require("./jobs/sportyendofday");
+const sportylive_1 = require("./jobs/sportylive");
+const sportytoday_1 = require("./jobs/sportytoday");
 let cronJobs = {};
 let isRunning = false;
 const startSportybetFootballBot = () => __awaiter(void 0, void 0, void 0, function* () {

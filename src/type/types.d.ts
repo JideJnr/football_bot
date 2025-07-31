@@ -96,3 +96,13 @@ interface RawMatch {
   };
   banned: boolean;
 }
+
+interface CleanedMatch extends Omit<RawMatch, 'markets'> {
+  markets: {
+    [marketType: string]: {
+      [specifier: string]: Market & {
+        outcomesMap: { [desc: string]: Outcome };
+      };
+    };
+  };
+}
