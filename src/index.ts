@@ -3,10 +3,12 @@ import http from 'http';
 import WebSocket from 'ws';
 import {  getAllBots,getPredictionById,getStatusById,postPrediction, runBetBuilder, startBotById, startEngine, stopBotById, stopEngine } from './controller';
 import setupWebSocket from './wsServer';
+import { LiveMatchWorker } from './bots/sporty/workers/EnhancedLiveMatchWorker';
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
+const worker = new LiveMatchWorker(process.env.MONGO_URI!);
 
 // Setup WebSocket
 setupWebSocket(wss);
@@ -23,7 +25,15 @@ app.post('/prediction', postPrediction);
 app.get('/prediction/id', getPredictionById);
 
 // Start server
+worker.start();
+
 const PORT = process.env.PORT || 3001;
+
 server.listen(PORT, () => {
   console.log(`✅ Bot Service running on port ${PORT}`);
+});
+
+process.on('SIGTERM', async () => {
+  await worker.stop();
+  process.exit(0);
 });

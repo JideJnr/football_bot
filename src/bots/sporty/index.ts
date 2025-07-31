@@ -9,7 +9,7 @@ let isRunning = false;
 export const startSportybetFootballBot = async () => {
   if (isRunning) return;
 
-  cronJobs['live'] = cron.schedule('*/5 * * * *', async () => {
+  cronJobs['live'] = cron.schedule('*/3 * * * *', async () => {
     console.log('[CRON] SportyBet Football: Live match job triggered');
     await live();
   });
