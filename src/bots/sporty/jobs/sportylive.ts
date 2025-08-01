@@ -14,6 +14,8 @@ export async function live() {
     // 2. Clean
     const cleaner = new ComprehensiveMatchCleaner();
     const cleanedMatches = await cleaner.cleanAndSave(rawMatches);
+
+    console.log(cleanedMatches);
     
     // 3. Save to DB
     await dbService.saveMatches(cleanedMatches);
