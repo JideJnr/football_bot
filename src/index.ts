@@ -34,13 +34,13 @@ app.post('/stop', stopEngine);
 app.get('/all', getAllBots);
 
 // Bot status - GET (use one route only)
-app.get('/status', getStatusById);
+app.get('/status', checkEngineStatus);
 
 // Starting and stopping bots - POST (state changes)
 app.post('/start/:id', startBotById);
 app.post('/stop/:id', stopBotById);
 
-app.get('/status/:id', checkEngineStatus);
+app.get('/status/:id', getStatusById);
 
 // Run bet builder - POST (action)
 app.post('/betBuilder', runBetBuilder);
