@@ -5,6 +5,7 @@ import {
   getSportybetFootballStatus,
 } from './bots/sporty/index';
 import { Bot, BotController } from './type/types';
+import { formatDuration } from './util/formatDuration';
 
 // ================ Configuration ================
 const BOT_CONTROLLERS: Record<string, BotController> = {
@@ -22,6 +23,7 @@ const BOTS: Bot[] = [
 
 // ================ State Management ================
 let engineStatus = false;
+let uptime: number | null = null;
 
 // ================ Helper Functions ================
 const findBotById = (id: string) => BOTS.find(bot => bot.id === id);
@@ -70,6 +72,8 @@ export const startEngine = async (req: Request, res: Response) => {
   }
 
   engineStatus = true;
+  uptime  = Date.now();
+
   return res.status(200).json({
     success: true,
     status: 'ENGINE_STARTED',
@@ -95,6 +99,8 @@ export const stopEngine = async (req: Request, res: Response) => {
   }
 
   engineStatus = false;
+  uptime  = null;
+  
   return res.status(200).json({
     success: true,
     status: 'ENGINE_STOPPED',
@@ -103,12 +109,67 @@ export const stopEngine = async (req: Request, res: Response) => {
   });
 };
 
+export const checkEngineStatus = async (req: Request, res: Response) => {
+  if (!engineStatus) {
+    return res.status(200).json({
+      success: false,
+      status: 'ENGINE_NOT_RUNNING',
+      message: 'Engine is not running.'
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    status: 'ENGINE_ALREADY_RUNNING',
+    message: 'Engine is running.',
+    data: {
+      id: 'FOOTBALL_ENGINE', // static ID or from config
+      name: 'Football Engine',
+      status: 'running',
+      totalBots: BOTS.length,
+      activeBots: BOTS.filter(b => b.status).length,
+      winRate: 75, // placeholder until calculated
+      profit: 24.5, // placeholder
+      roi: 17, // placeholder
+      uptime: uptime ? formatDuration(Date.now() - uptime) : '0m',
+      cpuUsage: 32, // placeholder
+      memoryUsage: 1.2, // placeholder
+      memoryTotal: 4, // placeholder
+      bots: BOTS.map(bot => ({
+        ...bot
+      })),
+      activity: [
+        { id: 1, time: '2 min ago', event: 'Bet placed on Match X', odds: 3.5, status: 'pending' },
+        { id: 2, time: '15 min ago', event: 'Bot D started', odds: null, status: 'success' },
+        { id: 3, time: '32 min ago', event: 'Bet won on Match Y', odds: 2.8, status: 'win' }
+      ]
+    }
+  });
+};
+
+
+export const getAllBots = async (req: Request, res: Response) => {
+  if (!engineStatus) {
+    return res.status(200).json({
+      success: false,
+      status: 'ENGINE_NOT_RUNNING',
+      message: 'Engine must be running to view bots.',
+    });
+  }
+
+  return res.status(200).json({
+    success: true,
+    message: 'Running bots fetched.',
+    data: BOTS,
+  });
+};
+
 // ================ Bot Operations ================
 export const startBotById = async (req: Request, res: Response) => {
   const { id } = req.body;
   
   if (!engineStatus) {
-    return res.status(400).json({
+    return res.status(200).json({
       success: false,
       status: 'ENGINE_NOT_RUNNING',
       message: 'Engine must be running to start a bot.',
@@ -116,7 +177,7 @@ export const startBotById = async (req: Request, res: Response) => {
   }
 
   const bot = findBotById(id);
-  if (!bot) return res.status(404).json({ success: false, message: 'Bot not found.' });
+  if (!bot) return res.status(200).json({ success: false, message: 'Bot not found.' });
   if (bot.status) return res.status(200).json({ success: false, message: 'Bot is already running.' });
 
   const result = await handleBotOperation(bot, 'start');
@@ -133,7 +194,7 @@ export const stopBotById = async (req: Request, res: Response) => {
   const { id } = req.body;
 
   if (!engineStatus) {
-    return res.status(400).json({
+    return res.status(200).json({
       success: false,
       status: 'ENGINE_NOT_RUNNING',
       message: 'Engine must be running to stop a bot.',
@@ -141,7 +202,7 @@ export const stopBotById = async (req: Request, res: Response) => {
   }
 
   const bot = findBotById(id);
-  if (!bot) return res.status(404).json({ success: false, message: 'Bot not found.' });
+  if (!bot) return res.status(200).json({ success: false, message: 'Bot not found.' });
   if (!bot.status) return res.status(200).json({ success: false, message: 'Bot already stopped.' });
 
   const result = await handleBotOperation(bot, 'stop');
@@ -154,28 +215,11 @@ export const stopBotById = async (req: Request, res: Response) => {
   });
 };
 
-// ================ Status Operations ================
-export const getAllBots = async (req: Request, res: Response) => {
-  if (!engineStatus) {
-    return res.status(400).json({
-      success: false,
-      status: 'ENGINE_NOT_RUNNING',
-      message: 'Engine must be running to view bots.',
-    });
-  }
-
-  return res.status(200).json({
-    success: true,
-    message: 'Running bots fetched.',
-    data: BOTS,
-  });
-};
-
 export const getStatusById = async (req: Request, res: Response) => {
   const { id } = req.body;
 
   const bot = findBotById(id);
-  if (!bot) return res.status(404).json({ success: false, message: 'Bot not found.' });
+  if (!bot) return res.status(200).json({ success: false, message: 'Bot not found.' });
 
   const result = await handleBotOperation(bot, 'status');
   const isRunning = result?.success ?? bot.status;
@@ -190,7 +234,7 @@ export const getStatusById = async (req: Request, res: Response) => {
 // ================ Prediction Operations ================
 export const postPrediction = (req: Request, res: Response) => {
   if (!engineStatus) {
-    return res.status(400).json({
+    return res.status(200).json({
       success: false,
       message: 'Engine is not running.',
     });
@@ -207,7 +251,7 @@ export const postPrediction = (req: Request, res: Response) => {
 
 export const getPredictionById = (req: Request, res: Response) => {
   if (!engineStatus) {
-    return res.status(400).json({
+    return res.status(200).json({
       success: false,
       message: 'Engine is not running.',
     });
@@ -225,7 +269,7 @@ export const getPredictionById = (req: Request, res: Response) => {
 
 export const runBetBuilder = (req: Request, res: Response) => {
   if (!engineStatus) {
-    return res.status(400).json({
+    return res.status(200).json({
       success: false,
       message: 'Engine is not running.',
     });
