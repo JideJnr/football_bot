@@ -1,6 +1,6 @@
 import { MongoClient, Db, Collection } from 'mongodb';
-import { CleanedMatch } from '../../../type/types';
-import { addLog } from '../../../util/logger';
+import { CleanedMatch } from '../../../../type/types';
+import { addLog } from '../../../../util/logger';
 
 
 export class LiveMatchDatabaseService {

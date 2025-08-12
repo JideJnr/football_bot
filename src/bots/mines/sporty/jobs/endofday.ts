@@ -1,5 +1,5 @@
-import { fetchEndofDayMatches } from '../../../runners/sportybet';
-import { addLog } from '../../../util/logger';
+import { fetchEndofDayMatches } from '../../../../runners/sportybet';
+import { addLog } from '../../../../util/logger';
 import { LiveMatchDatabaseService } from "../database/MatchDatabaseService";
 
 

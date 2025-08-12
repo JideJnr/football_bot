@@ -3,7 +3,7 @@
     startSportybetFootballBot,
     stopSportybetFootballBot,
     getSportybetFootballStatus,
-  } from './bots/sporty/index';
+  } from './bots/mines/sporty/index';
   import { Bot, BotController } from './type/types';
   import { formatDuration } from './util/timeUtils';
 
@@ -17,7 +17,7 @@
   };
 
   const BOTS: Bot[] = [
-    { id: 'sportybet_football', name: 'sportybet_football', status: false },
+    { id: 'sportybet_football', name: 'Sportybet Football', status: false },
   ];
 
   // ================ State Management ================

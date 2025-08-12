@@ -1,8 +1,8 @@
 import cron, { ScheduledTask } from 'node-cron';
-import { finished } from './jobs/endofday';
+
+import { addLog } from '../../util/logger';
 import { live } from './jobs/live';
 import { today } from './jobs/today';
-import { addLog } from '../../util/logger';
 
 let cronJobs: { [key: string]: ScheduledTask } = {};
 let isRunning = false;
@@ -14,7 +14,6 @@ export const startSportybetFootballBot = async () => {
   addLog(' SportyBet Football: Waking Up');
   await live();
   await today();
-  await finished();
 
   cronJobs['live'] = cron.schedule('*/3 * * * *', async () => {
     addLog('[CRON] SportyBet Football: Live match job triggered');
@@ -24,11 +23,6 @@ export const startSportybetFootballBot = async () => {
   cronJobs['today'] = cron.schedule('0 0 * * *', async () => {
     addLog('[CRON] SportyBet Football: Today match job triggered');
     await today();
-  });
-
-  cronJobs['finished'] = cron.schedule('0 12 * * *', async () => {
-    addLog('[CRON] SportyBet Football: End-of-day job triggered');
-    await finished();
   });
 
   isRunning = true;

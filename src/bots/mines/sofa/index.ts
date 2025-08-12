@@ -1,8 +1,8 @@
 import cron, { ScheduledTask } from 'node-cron';
-import { finished } from './jobs/sportyendofday';
-import { live } from './jobs/sportylive';
-import { today } from './jobs/sportytoday';
-import { addLog } from '../../util/logger';
+import { finished } from './jobs/endofday';
+import { live } from './jobs/live';
+import { today } from './jobs/today';
+import { addLog } from '../../../util/logger';
 
 let cronJobs: { [key: string]: ScheduledTask } = {};
 let isRunning = false;
