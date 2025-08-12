@@ -1,6 +1,5 @@
 import { addLog } from "../../../util/logger";
 
-
 export async function live() {
   // const dbService = new LiveMatchDatabaseService(process.env.MONGO_URI!);
   

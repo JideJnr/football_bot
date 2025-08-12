@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getTodayDate } from '../util/timeUtils';
+import { getTodayDate } from '../../util/timeUtils';
 
 const BASE_HEADERS = {
   'User-Agent': 'Mozilla/5.0',

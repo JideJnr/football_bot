@@ -1,5 +1,5 @@
 
-import { fetchTodayMatches } from '../../../../runners/sport';
+import { fetchTodayMatches } from '../../../runners/sport';
 import { addLog } from '../../../../util/logger';
 import { LiveMatchDatabaseService } from "../database/MatchDatabaseService";
 

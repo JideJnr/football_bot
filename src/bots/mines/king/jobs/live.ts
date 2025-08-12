@@ -1,4 +1,4 @@
-import { fetchLiveMatches } from "../../../../runners/sport";
+import { fetchLiveMatches } from "../../../runners/sport";
 import { addLog } from "../../../../util/logger";
 import { ComprehensiveMatchCleaner } from "../cleaners/Cleaner";
 import { LiveMatchDatabaseService } from "../database/MatchDatabaseService";
