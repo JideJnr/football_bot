@@ -11,9 +11,10 @@ import {
   stopEngine
 } from './controller';
 import setupWebSocket from './wsServer';
-import { LiveMatchWorker } from './bots/sporty/workers/EnhancedLiveMatchWorker';
+import { LiveMatchWorker } from './workers/EnhancedLiveMatchWorker';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
+import { addLog } from './util/logger';
 
 const app = express();
 const server = http.createServer(app);
@@ -519,8 +520,8 @@ worker.start();
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-  console.log(`✅ Bot Service running on port ${PORT}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
+  addLog(`✅ Bot Service running on port ${PORT}`);
+  addLog(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
 });
 
 // Graceful shutdown

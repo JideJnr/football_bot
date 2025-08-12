@@ -1,4 +1,5 @@
 import { MongoClient } from 'mongodb';
+import { addLog } from '../util/logger';
 
 const uri = process.env.MONGODB_URI || '';
 const dbName = process.env.MONGODB_DB || 'bot_football';
@@ -20,7 +21,7 @@ export async function saveToDB(data: any) {
     const db = client.db(dbName);
     const collection = db.collection(collectionName);
     const result = await collection.insertOne(data);
-    console.log('Saved to MongoDB:', result.insertedId);
+    addLog('Saved to MongoDB:', result.insertedId);
     return result.insertedId;
   } catch (error) {
     console.error('MongoDB save error:', error);

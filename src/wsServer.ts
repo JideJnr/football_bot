@@ -1,15 +1,16 @@
 import WebSocket, { Server } from 'ws';
+import { addLog } from './util/logger';
 
 let clients: WebSocket[] = [];
 
 const setupWebSocket = (wss: Server) => {
   wss.on('connection', (ws: WebSocket) => {
     clients.push(ws);
-    console.log('📡 Frontend connected to WebSocket');
+    addLog('📡 Frontend connected to WebSocket');
 
     ws.on('close', () => {
       clients = clients.filter((client) => client !== ws);
-      console.log('❌ Frontend disconnected');
+      addLog('❌ Frontend disconnected');
     });
   });
 };

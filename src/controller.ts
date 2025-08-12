@@ -5,7 +5,7 @@
     getSportybetFootballStatus,
   } from './bots/sporty/index';
   import { Bot, BotController } from './type/types';
-  import { formatDuration } from './util/formatDuration';
+  import { formatDuration } from './util/timeUtils';
 
   // ================ Configuration ================
   const BOT_CONTROLLERS: Record<string, BotController> = {
@@ -18,7 +18,6 @@
 
   const BOTS: Bot[] = [
     { id: 'sportybet_football', name: 'sportybet_football', status: false },
-  
   ];
 
   // ================ State Management ================
@@ -119,23 +118,13 @@
         id: 'FOOTBALL_ENGINE', // static ID or from config
         name: 'Football Engine',
         status: 'offline',
-        totalBots: BOTS.length,
-        activeBots: BOTS.filter(b => b.status).length,
-        winRate: 75, // placeholder until calculated
-        profit: 24.5, // placeholder
-        roi: 17, // placeholder
         uptime: uptime ? formatDuration(Date.now() - uptime) : '0m',
         cpuUsage: 32, // placeholder
         memoryUsage: 1.2, // placeholder
         memoryTotal: 4, // placeholder
         bots: BOTS.map(bot => ({
           ...bot
-        })),
-        activity: [
-          { id: 1, time: '2 min ago', event: 'Bet placed on Match X', odds: 3.5, status: 'pending' },
-          { id: 2, time: '15 min ago', event: 'Bot D started', odds: null, status: 'success' },
-          { id: 3, time: '32 min ago', event: 'Bet won on Match Y', odds: 2.8, status: 'win' }
-        ]
+        }))
       }
       });
     }
@@ -252,4 +241,3 @@
       data: { ...bot, status: isRunning },
     });
   };
-

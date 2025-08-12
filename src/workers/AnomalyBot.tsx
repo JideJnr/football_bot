@@ -1,5 +1,7 @@
 // anomalyBot.ts
 
+import { addLog } from "../util/logger";
+
 // Enum for anomaly types
 export enum AnomalyType {
   LowMatchCount = 'LowMatchCount',
@@ -105,27 +107,27 @@ export class AnomalyBot {
 // Stub implementations — replace with your real logic
 
 function alertTeam(report: AnomalyReport) {
-  console.log(`🚨 ALERT TEAM: ${report.type} - ${report.message}`);
+  addLog(`🚨 ALERT TEAM: ${report.type} - ${report.message}`);
   // Send email, slack, sms, etc.
 }
 
 function throttleScraper() {
-  console.log('⏳ Throttling scraper due to low data volume');
+  addLog('⏳ Throttling scraper due to low data volume');
   // Pause or slow down scraper frequency here
 }
 
 function quarantineMatch(eventId?: string) {
-  console.log(`🛑 Quarantining match ${eventId}`);
+  addLog(`🛑 Quarantining match ${eventId}`);
   // Move match to quarantine DB collection or mark as invalid
 }
 
 function logAnomaly(report: AnomalyReport) {
-  console.log(`📝 Logging anomaly: ${report.type} - ${report.message}`);
+  addLog(`📝 Logging anomaly: ${report.type} - ${report.message}`);
   // Persist anomaly details for audit/history
 }
 
 function flagForCorrection(eventId?: string) {
-  console.log(`⚠️ Flagging match ${eventId} for manual or automated correction`);
+  addLog(`⚠️ Flagging match ${eventId} for manual or automated correction`);
   // Add to manual review queue or auto-correct logic
 }
 
@@ -168,7 +170,7 @@ async function pipelineStep(cleanedMatches: CleanedMatch[]) {
       handleAnomaly(report);
     });
   } else {
-    console.log('No anomalies detected.');
+    addLog('No anomalies detected.');
   }
 
   // Continue pipeline (e.g., save cleanedMatches to DB)

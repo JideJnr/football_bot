@@ -1,25 +1,6 @@
 import axios from 'axios';
+import { getCurrentTimestamp, getTodayTimeRange } from '../util/timeUtils';
 
-// Helper: Generate current timestamp for _t parameters
-const getCurrentTimestamp = () => Date.now();
-
-// Helper: Get today's time range in SportyBet's format (00:00:00 to 23:59:59)
-const getTodayTimeRange = () => {
-  const now = new Date();
-  const start = new Date(now);
-  start.setHours(0, 0, 0, 0);
-  
-  const end = new Date(start);
-  end.setDate(end.getDate() + 1);
-  end.setMilliseconds(-1);
-
-  return {
-    startTime: start.getTime(),
-    endTime: end.getTime()
-  };
-};
-
-// ...existing code...
 export const fetchLiveMatches = async () => {
   try {
     const response = await axios.get(
@@ -41,9 +22,7 @@ export const fetchLiveMatches = async () => {
     return [];
   }
 };
-// ...existing code...
 
-// 2. END OF DAY RESULTS (dynamic time range + timestamp)
 export const fetchEndofDayMatches = async (count = 20) => {
   try {
     const { startTime, endTime } = getTodayTimeRange();
@@ -66,7 +45,6 @@ export const fetchEndofDayMatches = async (count = 20) => {
   }
 };
 
-// 3. TODAY MATCHES (unchanged as requested)
 export const fetchTodayMatches = async () => {
   try {
     const response = await axios.get(
@@ -87,7 +65,6 @@ export const fetchTodayMatches = async () => {
   }
 };
 
-// 4. MATCH DETAILS (unchanged as requested)
 export const fetchMatchDetails = async (eventId: string) => {
   try {
     const response = await axios.get(

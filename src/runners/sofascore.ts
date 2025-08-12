@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { getTodayDate } from '../util/timeUtils';
 
 const BASE_HEADERS = {
   'User-Agent': 'Mozilla/5.0',
@@ -6,9 +7,6 @@ const BASE_HEADERS = {
   'Referer': 'https://www.sofascore.com/',
   'Origin': 'https://www.sofascore.com'
 };
-
-
-const getTodayDate = () => new Date().toISOString().split('T')[0];
 
 export const fetchTodayMatches = async () => {
   const today = getTodayDate(); // Dynamically set
@@ -36,3 +34,17 @@ export const fetchLiveMatches = async () => {
     return [];
   }
 };
+
+export const fetchMatchDetails = async () => {
+  try {
+    const { data } = await axios.get(
+      'https://www.sofascore.com/api/v1/sport/football/events/live',
+      { headers: BASE_HEADERS }
+    );
+    return data;
+  } catch (err) {
+    console.error('Error fetching live matches:', err instanceof Error ? err.message : 'Unknown error');
+    return [];
+  }
+};
+

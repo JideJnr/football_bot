@@ -1,4 +1,5 @@
 import { MongoClient, InsertOneResult, InsertManyResult } from 'mongodb';
+import { addLog } from '../util/logger';
 
 const uri = process.env.MONGODB_URI || '';
 const dbName = process.env.MONGODB_DB || 'bot_football';
@@ -28,11 +29,11 @@ export async function saveToDB(data: any | any[]): Promise<string[] | string> {
     if (Array.isArray(data)) {
       if (data.length === 0) return [];
       const result: InsertManyResult = await collection.insertMany(data);
-      console.log('Saved to MongoDB:', result.insertedIds);
+      addLog(`Saved to MongoDB: ${result.insertedIds}`);
       return Object.values(result.insertedIds).map(id => id.toString());
     } else {
       const result: InsertOneResult = await collection.insertOne(data);
-      console.log('Saved to MongoDB:', result.insertedId);
+      addLog(`Saved to MongoDB: ${result.insertedId}`);
       return result.insertedId.toString();
     }
   } catch (error) {
