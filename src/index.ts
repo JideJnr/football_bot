@@ -29,12 +29,6 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'API for managing betting bots and engine operations',
     },
-    servers: [
-      {
-        url: 'http://localhost:3001',
-        description: 'Development server',
-      },
-    ],
     components: {
       schemas: {
         Bot: {
