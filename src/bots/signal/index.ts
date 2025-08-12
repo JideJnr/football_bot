@@ -3,7 +3,6 @@ import { addLog } from '../../util/logger';
 import { live } from './jobs/live';
 import { upcoming } from './jobs/upcoming';
 
-
 let cronJobs: { [key: string]: ScheduledTask } = {};
 let isRunning = false;
 let uptime: number | null = null;

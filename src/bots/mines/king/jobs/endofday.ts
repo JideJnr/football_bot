@@ -1,4 +1,4 @@
-import { fetchEndofDayMatches } from '../../../../runners/sportybet';
+import { fetchEndofDayMatches } from '../../../../runners/sport';
 import { addLog } from '../../../../util/logger';
 import { LiveMatchDatabaseService } from "../database/MatchDatabaseService";
 

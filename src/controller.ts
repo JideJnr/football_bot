@@ -158,6 +158,7 @@
     });
   };
 
+  // ================ Bot Operations ================
 
   export const getAllBots = async (req: Request, res: Response) => {
     if (!engineStatus) {
@@ -174,8 +175,7 @@
       data: BOTS,
     });
   };
-
-  // ================ Bot Operations ================
+  
   export const startBotById = async (req: Request, res: Response) => {
     const { id } = req.params;
     

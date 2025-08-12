@@ -1,4 +1,4 @@
-import { fetchLiveMatches } from "../../../runners/sportybet";
+import { fetchLiveMatches } from "../../../runners/sport";
 import { addLog } from "../../../util/logger";
 
 
