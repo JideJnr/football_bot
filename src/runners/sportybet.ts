@@ -19,7 +19,7 @@ const getTodayTimeRange = () => {
   };
 };
 
-// 1. LIVE MATCHES (now with dynamic _t)
+// ...existing code...
 export const fetchLiveMatches = async () => {
   try {
     const response = await axios.get(
@@ -33,12 +33,15 @@ export const fetchLiveMatches = async () => {
         },
       }
     );
-    return response.data.data[0].events; // Return just the matches array
+    // Flatten all events from all tournaments
+    const allEvents = response.data.data.flatMap((tournament: any) => tournament.events || []);
+    return allEvents;
   } catch (err) {
     console.error('Live matches error:', err instanceof Error ? err.message : 'Unknown error');
-    return []; // Return empty array on error
+    return [];
   }
 };
+// ...existing code...
 
 // 2. END OF DAY RESULTS (dynamic time range + timestamp)
 export const fetchEndofDayMatches = async (count = 20) => {
