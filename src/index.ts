@@ -11,10 +11,11 @@ import {
   stopEngine
 } from './controller';
 import setupWebSocket from './wsServer';
-import { LiveMatchWorker } from './workers/EnhancedLiveMatchWorker';
+
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { addLog } from './util/logger';
+import { LiveMatchWorker } from './bots/workers/EnhancedLiveMatchWorker';
 
 const app = express();
 const server = http.createServer(app);

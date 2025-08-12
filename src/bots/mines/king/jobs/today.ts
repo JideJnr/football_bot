@@ -1,21 +1,19 @@
-import { fetchEndofDayMatches } from '../../../runners/sportybet';
-import { addLog } from '../../../util/logger';
 
+import { fetchTodayMatches } from '../../../../runners/sportybet';
+import { addLog } from '../../../../util/logger';
+import { LiveMatchDatabaseService } from "../database/MatchDatabaseService";
 
+export async function today() {
 
-
-export async function finished() {
-
-   // const dbService = new LiveMatchDatabaseService(process.env.MONGO_URI!);
-
-      
+  const dbService = new LiveMatchDatabaseService(process.env.MONGO_URI!);
+  
   try {
-   // await dbService.connect();
+    await dbService.connect();
     
     // 1. Scrape
     
-    //const rawMatches = await fetchEndofDayMatches();
-    // console.log(rawMatches)
+    const rawMatches = await fetchTodayMatches();
+    console.log(rawMatches)
 
     // const cleaner = new ComprehensiveMatchCleaner();
     // const cleanedMatches = await cleaner.cleanAndSave(rawMatches);    
@@ -29,7 +27,7 @@ export async function finished() {
   } catch (error) {
     console.error('Live pipeline failed:', error);
   } finally {
-   // await dbService.close();
+    await dbService.close();
   }
 
 }

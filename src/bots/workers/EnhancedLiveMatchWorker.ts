@@ -1,5 +1,5 @@
 import { MongoClient } from 'mongodb';
-import { broadcastLog } from '../wsServer';
+import { broadcastLog } from '../../wsServer';
 
 
 export class LiveMatchWorker {
