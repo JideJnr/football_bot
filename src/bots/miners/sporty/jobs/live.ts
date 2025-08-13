@@ -12,6 +12,8 @@ export async function live(): Promise<void> {
   try {
     await dbService.connect();
 
+    addLog(`------- Live Job Started -------`);
+
     // 1. Scrape raw matches
     const rawMatches: RawMatch[] = await fetchLiveMatches();
 
@@ -48,7 +50,7 @@ export async function live(): Promise<void> {
     // const cleanedDetails = await detailsCleaner.clean(detailedData);
     // await dbService.saveMatchDetails(cleanedDetails);
 
-    addLog("Pipeline complete with match details.");
+    addLog("live job Pipeline complete with match details.");
   } catch (error) {
     console.error("Live pipeline failed:", error);
   } finally {

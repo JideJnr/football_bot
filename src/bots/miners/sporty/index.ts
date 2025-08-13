@@ -21,6 +21,8 @@ const runSafely = async (jobName: string, jobFn: () => Promise<void>) => {
 export const startSportybetFootballBot = async () => {
   if (isRunning) return;
 
+  console.log('[SPORTYBET_FOOTBALL] Starting SportyBet Football Bot...')
+
   uptime = Date.now();
   addLog('[SPORTYBET_FOOTBALL] Bot starting...');
 
