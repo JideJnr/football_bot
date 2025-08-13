@@ -42,7 +42,7 @@ export async function live(): Promise<void> {
 
     // 5. Log the first match details for cleaner building
     if (detailedData.length > 0) {
-      console.log("First match details sample:", detailedData[0]);
+      console.log("------------------------------------ First match details sample:", detailedData[0],'------------------------------------');
     }
 
     // TODO: clean details & save to DB
