@@ -14,6 +14,12 @@ export async function live(): Promise<void> {
 
     // 1. Scrape raw matches
     const rawMatches: RawMatch[] = await fetchLiveMatches();
+
+    if (rawMatches.length === 0) {
+      addLog("No live matches found.");
+      return;
+    }
+    
     addLog(`Fetched ${rawMatches.length} live matches.`);
 
     // 2. Clean and save basic matches
