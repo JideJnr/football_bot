@@ -1,7 +1,7 @@
 interface BotController {
   start: () => Promise<void>;
   stop: () => void;
-  status: () => boolean;
+  status: () => any;
 }
 
 interface Bot {

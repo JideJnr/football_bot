@@ -3,7 +3,7 @@
     startSportybetFootballBot,
     stopSportybetFootballBot,
     getSportybetFootballStatus,
-  } from './bots/mines/sporty/index';
+  } from './bots/miners/sporty/index';
   import { Bot, BotController } from './type/types';
   import { formatDuration } from './util/timeUtils';
 

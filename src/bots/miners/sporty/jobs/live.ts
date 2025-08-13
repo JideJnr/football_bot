@@ -1,6 +1,5 @@
-import axios from "axios";
 import pLimit from "p-limit";
-import { fetchLiveMatches, fetchMatchDetails } from "../../../runners/sport";
+import { fetchLiveMatches, fetchMatchDetails } from "../runners/sport";
 import { addLog } from "../../../../util/logger";
 import { ComprehensiveMatchCleaner } from "../cleaners/Cleaner";
 import { LiveMatchDatabaseService } from "../database/MatchDatabaseService";

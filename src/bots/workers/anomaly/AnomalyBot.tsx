@@ -1,6 +1,6 @@
 // anomalyBot.ts
 
-import { addLog } from "../../util/logger";
+import { addLog } from "../../../util/logger";
 
 // Enum for anomaly types
 export enum AnomalyType {

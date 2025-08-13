@@ -1,4 +1,4 @@
-import { fetchLiveMatches } from "../../runners/sport";
+import { fetchLiveMatches } from "../../miners/sporty/runners/sport";
 import { addLog } from "../../../util/logger";
 
 

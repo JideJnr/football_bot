@@ -36,3 +36,7 @@ export const getLogs = () => logs;
 export const clearLogs = () => {
   logs.length = 0;
 };
+
+export const clearError = () => {
+  logs.length = 0;
+};

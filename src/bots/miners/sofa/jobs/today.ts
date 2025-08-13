@@ -1,20 +1,18 @@
-import { fetchEndofDayMatches } from '../../../runners/sport';
+
+import { fetchTodayMatches } from '../../sporty/runners/sport';
 import { addLog } from '../../../../util/logger';
 import { LiveMatchDatabaseService } from "../database/MatchDatabaseService";
 
+export async function today() {
 
-
-export async function finished() {
-
-    const dbService = new LiveMatchDatabaseService(process.env.MONGO_URI!);
-
-      
+  const dbService = new LiveMatchDatabaseService(process.env.MONGO_URI!);
+  
   try {
     await dbService.connect();
     
     // 1. Scrape
     
-    const rawMatches = await fetchEndofDayMatches();
+    const rawMatches = await fetchTodayMatches();
     console.log(rawMatches)
 
     // const cleaner = new ComprehensiveMatchCleaner();

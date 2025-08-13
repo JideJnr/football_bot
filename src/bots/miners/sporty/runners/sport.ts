@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getCurrentTimestamp, getTodayTimeRange } from '../../util/timeUtils';
+import { getCurrentTimestamp, getTodayTimeRange } from '../../../../util/timeUtils';
 
 export const fetchLiveMatches = async () => {
   try {

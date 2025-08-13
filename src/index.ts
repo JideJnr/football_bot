@@ -15,12 +15,12 @@ import setupWebSocket from './wsServer';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import { addLog } from './util/logger';
-import { LiveMatchWorker } from './bots/workers/EnhancedLiveMatchWorker';
+
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
-const worker = new LiveMatchWorker(process.env.MONGO_URI!);
+
 
 // Swagger configuration
 const swaggerOptions = {
@@ -517,7 +517,7 @@ app.post('/stop/:id', stopBotById);
 app.get('/status/:id', getStatusById);
 
 // Start worker
-worker.start();
+
 
 const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
@@ -527,6 +527,6 @@ server.listen(PORT, () => {
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
-  await worker.stop();
+  
   process.exit(0);
 });

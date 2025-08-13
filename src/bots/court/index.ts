@@ -8,36 +8,39 @@ let cronJobs: { [key: string]: ScheduledTask } = {};
 let isRunning = false;
 let uptime: number | null = null;
 
-export const startSportybetFootballBot = async () => {
+export const startCourtBot = async () => {
   if (isRunning) return;
-  uptime  = Date.now();
-  addLog(' SportyBet Football: Waking Up');
+  uptime = Date.now();
+  addLog('[COURT_BOT] Initializing...');
+
   await live();
   await today();
 
   cronJobs['live'] = cron.schedule('*/3 * * * *', async () => {
-    addLog('[CRON] SportyBet Football: Live match job triggered');
+    addLog('[CRON] Court Bot: Live case job triggered');
     await live();
   });
 
   cronJobs['today'] = cron.schedule('0 0 * * *', async () => {
-    addLog('[CRON] SportyBet Football: Today match job triggered');
+    addLog('[CRON] Court Bot: Today’s schedule job triggered');
     await today();
   });
 
   isRunning = true;
-  addLog('[SPORTYBET_FOOTBALL] Bot started');
+  addLog('[COURT_BOT] Bot started');
 };
 
-export const stopSportybetFootballBot = () => {
+export const stopCourtBot = () => {
   if (!isRunning) return;
-
 
   Object.values(cronJobs).forEach(job => job.stop());
   cronJobs = {};
-  uptime  = null;
+  uptime = null;
   isRunning = false;
-  addLog('[SPORTYBET_FOOTBALL] Bot stopped');
+  addLog('[COURT_BOT] Bot stopped');
 };
 
-export const getSportybetFootballStatus = () => isRunning;
+export const getCourtBotStatus = () => ({
+  isRunning,
+  uptime
+});
