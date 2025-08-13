@@ -45,25 +45,49 @@ export const fetchEndofDayMatches = async (count = 20) => {
   }
 };
 
+
 export const fetchTodayMatches = async () => {
   try {
-    const response = await axios.get(
-      'https://www.sportybet.com/api/ng/factsCenter/wapConfigurableEventsByOrder',
+    const body = {
+      productId: 3,
+      sportId: "sr:sport:1",
+      order: 0,
+      pageNum: 1,
+      pageSize: 20,
+      userId: "T221216083139puid22689672",
+      withTwoUpMarket: true,
+      withOneUpMarket: true
+    };
+
+    const response = await axios.post(
+      "https://www.sportybet.com/api/ng/factsCenter/wapConfigurableEventsByOrder",
+      body,
       {
         headers: {
-          'User-Agent': 'Mozilla/5.0',
-          'Accept': 'application/json',
-          'Referer': 'https://www.sportybet.com/',
-          'Origin': 'https://www.sportybet.com',
-        },
+          "User-Agent":
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/",
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Origin: "https://www.sportybet.com",
+          Referer:
+            "https://www.sportybet.com/ng/m/sport/football/today?sort=0",
+          // Must include valid cookies for your session if required
+          Cookie:
+            "device-id=c9d951a6-853a-4911-b998-f415f86666c6; sb_country=ng; ...; accessToken=patron:id:accesstoken:..."
+        }
       }
     );
-    return response.data.data;
+
+    return response.data;
   } catch (err) {
-    console.error('Today matches error:', err instanceof Error ? err.message : 'Unknown error');
-    return [];
+    console.error(
+      "Today matches error:",
+      err instanceof Error ? err.message : "Unknown error"
+    );
+    return null;
   }
 };
+
 
 export const fetchMatchDetails = async (eventId: string) => {
   try {
