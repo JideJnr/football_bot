@@ -31,7 +31,7 @@
     bot: Bot,
     operation: 'start' | 'stop' | 'status'
   ) => {
-    const controller = BOT_CONTROLLERS[bot.name];
+    const controller = BOT_CONTROLLERS[bot.id];
     if (!controller?.[operation]) return null;
 
     try {
