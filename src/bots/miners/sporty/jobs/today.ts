@@ -13,7 +13,7 @@ export async function today() {
     // 1. Scrape
     
     const rawMatches = await fetchTodayMatches();
-    console.log(rawMatches)
+    console.log('-----------------------today raw match--------------------',rawMatches, '-----------------------today raw match--------------------')
 
     // const cleaner = new ComprehensiveMatchCleaner();
     // const cleanedMatches = await cleaner.cleanAndSave(rawMatches);    
