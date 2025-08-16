@@ -4,6 +4,7 @@ import { addLog } from "../../../../util/logger";
 import { ComprehensiveMatchCleaner } from "../cleaners/Cleaner";
 import { LiveMatchDatabaseService } from "../database/MatchDatabaseService";
 import { RawMatch } from "../../../../type/types";
+import { MatchDetailsCleaner } from "../cleaners/MatchDetailsCleaner";
 
 
 export async function live(): Promise<void> {
@@ -45,12 +46,15 @@ export async function live(): Promise<void> {
       console.log("*** First match details sample:", detailedData[0],'***');
     }
 
-    // TODO: clean details & save to DB
-    // const detailsCleaner = new MatchDetailsCleaner();
-    // const cleanedDetails = await detailsCleaner.clean(detailedData);
-    // await dbService.saveMatchDetails(cleanedDetails);
+  // 5. Clean and save details
+    const detailsCleaner = new MatchDetailsCleaner();
+    const cleanedDetails = detailedData.map(detail => 
+      detailsCleaner.clean(detail)
+    );
+    await dbService.saveMatchDetails(cleanedDetails);
 
-    addLog("*** live job Pipeline complete with match details. ***");
+    addLog("✅ Live job complete with details");
+
   } catch (error) {
     console.error("Live pipeline failed:", error);
   } finally {
