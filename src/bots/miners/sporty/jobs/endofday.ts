@@ -15,8 +15,8 @@ export async function finished() {
     // 1. Scrape
     
     const rawMatches = await fetchEndofDayMatches();
-    console.log('-----------------------end of day raw match--------------------'  ,rawMatches
-      ,'-----------------------end of day raw match--------------------'
+    console.log('*** end of day raw match ***'  ,rawMatches
+      ,'*** end of day raw match ***'
     )
 
     // const cleaner = new ComprehensiveMatchCleaner();

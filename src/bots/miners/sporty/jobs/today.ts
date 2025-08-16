@@ -10,7 +10,7 @@ export async function today() {
   try {
     await dbService.connect();
     
-    // 1. Scrape
+    // 1. Scrape all matches for today from all pages 
     
     const rawMatches = await fetchTodayMatches();
     console.log('-----------------------today raw match--------------------',rawMatches, '-----------------------today raw match--------------------')
