@@ -27,7 +27,7 @@ export async function finished() {
     /// console.log the first match response so we can build cleaner of it
     /// clean data and add more data to db
     
-    addLog('Pipeline complete.');
+    //addLog('Pipeline complete.');
   } catch (error) {
     console.error('Live pipeline failed:', error);
   } finally {

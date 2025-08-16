@@ -13,7 +13,7 @@ export async function today() {
     // 1. Scrape all matches for today from all pages 
     
     const rawMatches = await fetchTodayMatches();
-    console.log('-----------------------today raw match--------------------',rawMatches, '-----------------------today raw match--------------------')
+    console.log('***today raw match**8',rawMatches, '***today raw match***')
 
     // const cleaner = new ComprehensiveMatchCleaner();
     // const cleanedMatches = await cleaner.cleanAndSave(rawMatches);    
@@ -23,7 +23,7 @@ export async function today() {
     /// console.log the first match response so we can build cleaner of it
     /// clean data and add more data to db
     
-    addLog('Pipeline complete.');
+    //addLog('Pipeline complete.');
   } catch (error) {
     console.error('Live pipeline failed:', error);
   } finally {
