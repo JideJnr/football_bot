@@ -41,16 +41,18 @@ export async function live(): Promise<void> {
       matchIds.map(id => limit(() => fetchMatchDetails(id)))
     );
 
-    // 5. Log the first match details for cleaner building
-    if (detailedData.length > 0) {
-      console.log("*** First match details sample:", detailedData[0],'***');
-    }
+
 
   // 5. Clean and save details
     const detailsCleaner = new MatchDetailsCleaner();
     const cleanedDetails = detailedData.map(detail => 
       detailsCleaner.clean(detail)
     );
+
+        // 5. Log the first match details for cleaner building
+    if (detailedData.length > 0) {
+      console.log("*** First match cleaned sample:", cleanedDetails[0],'***');
+    }
     await dbService.saveMatchDetails(cleanedDetails);
 
     addLog("✅ Live job complete with details");
