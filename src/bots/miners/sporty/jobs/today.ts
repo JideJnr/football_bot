@@ -14,18 +14,34 @@ export async function today() {
     
     const rawMatches = await fetchTodayMatches();
    
-    console.log(
-      'Full today response:', 
-      JSON.stringify(
-        {
-          bizCode: rawMatches.bizCode,
-          message: rawMatches.message,
-          tournaments_sample: rawMatches.data.tournaments.slice(0, 2) // First 2 tournaments
-        }, 
-        null, 
-        2
-      )
-    );
+    // In your today() function, replace the console.log with:
+console.log('=== FULL DATA STRUCTURE ===');
+console.log(JSON.stringify({
+  metadata: {
+    bizCode: rawMatches.bizCode,
+    message: rawMatches.message,
+    tournamentCount: rawMatches.data.tournaments.length
+  },
+  sampleTournament: {
+    ...rawMatches.data.tournaments[0],
+    events: rawMatches.data.tournaments[0].events.slice(0, 1) // Just first match
+  },
+  firstMatchMarkets: rawMatches.data.tournaments[0]?.events?.[0]?.markets?.slice(0, 3)
+}, null, 2));
+
+// Additional structural checks
+const firstEvent = rawMatches.data.tournaments[0]?.events?.[0];
+if (firstEvent) {
+  console.log('=== CRITICAL MATCH FIELDS ===');
+  console.log(JSON.stringify({
+    eventId: firstEvent.eventId,
+    startTime: new Date(firstEvent.estimateStartTime).toISOString(),
+    teams: `${firstEvent.homeTeamName} vs ${firstEvent.awayTeamName}`,
+    status: firstEvent.status,
+    hasMarkets: Boolean(firstEvent.markets?.length),
+    marketCount: firstEvent.markets?.length || 0
+  }, null, 2));
+}
 
     // const cleaner = new ComprehensiveMatchCleaner();
     // const cleanedMatches = await cleaner.cleanAndSave(rawMatches);    
