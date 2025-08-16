@@ -48,11 +48,7 @@ export async function live(): Promise<void> {
     const cleanedDetails = detailedData.map(detail => 
       detailsCleaner.clean(detail)
     );
-
-        // 5. Log the first match details for cleaner building
-    if (detailedData.length > 0) {
-      console.log("*** First match cleaned sample:", cleanedDetails[0],'***');
-    }
+    
     await dbService.saveMatchDetails(cleanedDetails);
 
     addLog("✅ Live job complete with details");
