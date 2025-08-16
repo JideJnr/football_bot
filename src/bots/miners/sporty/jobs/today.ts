@@ -13,7 +13,19 @@ export async function today() {
     // 1. Scrape all matches for today from all pages 
     
     const rawMatches = await fetchTodayMatches();
-    console.log('***today raw match**8',rawMatches, '***today raw match***')
+   
+    console.log(
+      'Full today response:', 
+      JSON.stringify(
+        {
+          bizCode: rawMatches.bizCode,
+          message: rawMatches.message,
+          tournaments_sample: rawMatches.data.tournaments.slice(0, 2) // First 2 tournaments
+        }, 
+        null, 
+        2
+      )
+    );
 
     // const cleaner = new ComprehensiveMatchCleaner();
     // const cleanedMatches = await cleaner.cleanAndSave(rawMatches);    
