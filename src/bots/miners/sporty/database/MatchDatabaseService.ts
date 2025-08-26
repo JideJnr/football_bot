@@ -137,6 +137,21 @@ export class LiveMatchDatabaseService {
     return this.detailsCollection.findOne({ eventId });
   }
 
+    // Add to LiveMatchDatabaseService class
+  public async flagFinishedMatches(): Promise<void> {
+    // Detect matches that ended but not yet archived
+    const finishedMatches = await this.matchesCollection?.updateMany(
+      { 
+        status: 2,
+        isArchived: { $exists: false } 
+      },
+      { $set: { isArchived: false } } // Temporary flag
+    );
+    addLog(`🚩 Flagged ${finishedMatches?.modifiedCount} finished matches`);
+  }
+
+  await this.flagFinishedMatches();
+
   public async close(): Promise<void> {
     try {
       await this.client.close();
